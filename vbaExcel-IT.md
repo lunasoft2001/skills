@@ -1,11 +1,11 @@
-# Excel Analyzer Skill Bundle
+﻿# Excel Analyzer Skill Bundle
 
-Questo documento descrive il contenuto dello skill `excel-analyzer` in questo repository.
+Questo documento descrive il contenuto dello skill `vbaExcel` in questo repository.
 
 ## Struttura
 
 ```text
-excel-analyzer/
+vbaExcel/
   SKILL.md                        # Metadati dello skill (vbaExcel)
   INSTALL.txt                     # Note rapide di installazione e uso
   scripts/                        # Script di supporto PowerShell/Python
@@ -19,7 +19,7 @@ excel-analyzer/
 Per installare questo skill in GitHub Copilot, copia questa cartella nella directory degli skill di Copilot:
 
 ```powershell
-Copy-Item -Path "excel-analyzer" -Destination "$env:USERPROFILE\.copilot\skills\vbaExcel" -Recurse
+Copy-Item -Path "vbaExcel" -Destination "$env:USERPROFILE\.copilot\skills\vbaExcel" -Recurse
 ```
 
 Poi riavvia VS Code.
@@ -29,3 +29,4 @@ Poi riavvia VS Code.
 - Questo bundle e focalizzato su estrazione e reimportazione VBA per file Excel `.xlsm` su Windows.
 - Chiudi Excel prima di esportare o importare.
 - Esegui sempre un backup del file prima di importare modifiche VBA.
+

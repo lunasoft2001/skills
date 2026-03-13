@@ -1,4 +1,4 @@
-# Skills Repository
+﻿# Skills Repository
 
 This public repository stores reusable skills that can be installed and used with GitHub Copilot workflows.
 
@@ -21,21 +21,21 @@ This public repository stores reusable skills that can be installed and used wit
   - `access-analyzer-FR.md`
   - `access-analyzer-IT.md`
 
-### excel-analyzer
+### vbaExcel
 - Purpose: Extract, refactor, and re-import VBA code for Excel macro-enabled workbooks (`.xlsm`) on Windows.
 - What it includes: Python scripts for VBA export/import, VBOM access helper, and install notes.
 - Typical use cases: Export VBA modules to `.bas`, edit in VS Code, and safely import changes back into the workbook.
 - Main files:
-  - `excel-analyzer/SKILL.md`
-  - `excel-analyzer/INSTALL.txt`
-  - `excel-analyzer/scripts/`
+  - `vbaExcel/SKILL.md`
+  - `vbaExcel/INSTALL.txt`
+  - `vbaExcel/scripts/`
 - Language docs:
-  - `excel-analyzer-EN.md`
-  - `excel-analyzer-ES.md`
-  - `excel-analyzer-PT.md`
-  - `excel-analyzer-DE.md`
-  - `excel-analyzer-FR.md`
-  - `excel-analyzer-IT.md`
+  - `vbaExcel-EN.md`
+  - `vbaExcel-ES.md`
+  - `vbaExcel-PT.md`
+  - `vbaExcel-DE.md`
+  - `vbaExcel-FR.md`
+  - `vbaExcel-IT.md`
 
 ## How New Skills Are Documented
 
@@ -44,3 +44,4 @@ For every new skill added to this repository, this README will include:
 - Its main purpose and typical use cases.
 - Links to the key files/folders.
 - Optional links to language-specific docs.
+
