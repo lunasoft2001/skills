@@ -1,45 +1,45 @@
 ---
 name: vbaExcel
-description: Extraer y reimportar codigo VBA de archivos Excel .xlsm en Windows usando Python (pywin32/oletools) o VBScript. Usar para exportar modulos .bas, refactorizar en VS Code y volver a importar al XLSM.
+description: Extract and re-import VBA code from Excel .xlsm files on Windows using Python (pywin32/oletools) or VBScript. Use it to export .bas modules, refactor in VS Code, and import changes back into the XLSM.
 ---
 
 # vbaExcel
 
-## Uso rapido
+## Quick Usage
 
-1. Extraer VBA a archivos .bas.
-2. Refactorizar los .bas.
-3. Reimportar al .xlsm.
+1. Export VBA code to `.bas` files.
+2. Refactor the `.bas` files.
+3. Re-import them into the `.xlsm`.
 
-## Flujo recomendado
+## Recommended Workflow
 
-### 1) Exportar VBA
+### 1) Export VBA
 
-- Ejecuta el script de exportacion en `scripts/export_vba.py`.
-- Si falla el acceso a VBA, habilita `AccessVBOM` con `scripts/enable_vba_access.reg`.
+- Run the export script at `scripts/export_vba.py`.
+- If VBA access fails, enable `AccessVBOM` using `scripts/enable_vba_access.reg`.
 
-### 2) Refactorizar
+### 2) Refactor
 
-- Edita los archivos .bas en VS Code (o en el editor VBA).
+- Edit the `.bas` files in VS Code (or in the VBA editor).
 
-### 3) Reimportar
+### 3) Re-import
 
-- Ejecuta el script `scripts/import_vba.py` para reemplazar el codigo de cada modulo.
+- Run `scripts/import_vba.py` to replace each module's code.
 
-## Notas importantes
+## Important Notes
 
-- Excel debe estar instalado.
-- Cierra Excel antes de exportar o importar.
-- Siempre crea un backup del XLSM antes de importar.
+- Excel must be installed.
+- Close Excel before exporting or importing.
+- Always create an XLSM backup before importing changes.
 
-## Scripts incluidos
+## Included Scripts
 
-- `scripts/export_vba.py`: exporta VBA a .bas usando VBScript y COM.
-- `scripts/import_vba.py`: importa los .bas al XLSM via COM.
-- `scripts/enable_vba_access.reg`: habilita acceso programatico a VBA.
+- `scripts/export_vba.py`: exports VBA to `.bas` files via VBScript and COM.
+- `scripts/import_vba.py`: imports `.bas` files back into the XLSM via COM.
+- `scripts/enable_vba_access.reg`: enables programmatic access to VBA.
 
-## Cuando usar este skill
+## When to Use This Skill
 
-- Quieres extraer VBA para refactorizar.
-- Quieres automatizar el reingreso del codigo VBA al XLSM.
-- Tienes bloqueado el acceso a VBProject y necesitas habilitarlo.
+- You want to extract VBA code for refactoring.
+- You want to automate importing VBA code back into an XLSM.
+- VBProject access is blocked and you need to enable it.
