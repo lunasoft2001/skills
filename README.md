@@ -37,6 +37,22 @@ This public repository stores reusable skills that can be installed and used wit
   - `vbaExcel-FR.md`
   - `vbaExcel-IT.md`
 
+### m365-email-manager-skill
+- Purpose: Manage Microsoft 365 email (Outlook/Exchange Online) through Microsoft Graph with reusable CLI workflows.
+- What it includes: Setup/auth scripts, token management, email operation commands, and reference docs.
+- Typical use cases: List unread/recent mail, search by text, send/reply messages, mark as read, and move emails across folders.
+- Main files:
+  - `m365-email-manager-skill/SKILL.md`
+  - `m365-email-manager-skill/scripts/`
+  - `m365-email-manager-skill/references/`
+- Language docs:
+  - `m365-email-manager-skill-EN.md`
+  - `m365-email-manager-skill-ES.md`
+  - `m365-email-manager-skill-PT.md`
+  - `m365-email-manager-skill-DE.md`
+  - `m365-email-manager-skill-FR.md`
+  - `m365-email-manager-skill-IT.md`
+
 ## How New Skills Are Documented
 
 For every new skill added to this repository, this README will include:
