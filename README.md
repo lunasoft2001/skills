@@ -53,6 +53,23 @@ This public repository stores reusable skills that can be installed and used wit
   - `m365-email-manager-skill-FR.md`
   - `m365-email-manager-skill-IT.md`
 
+### bowling-proshop
+- Purpose: Virtual bowling ball driller and lane coach using the Dual Angle layout system (Mo Pinel style).
+- What it includes: Interactive 4-phase player consultation, ball recommendation from the active 2026 catalog, visual HTML report with real ball images and SVG diagrams.
+- Typical use cases: Ball selection for house/sport/challenge patterns, Dual Angle layout calculation, player profile diagnosis (speed/rev dominance), lane adjustment coaching.
+- Main files:
+  - `bowling-proshop/SKILL.md`
+  - `bowling-proshop/scripts/generate_bowling_report_v2.py`
+  - `bowling-proshop/references/current-balls-2026.md`
+  - `bowling-proshop/references/dual-angle.md`
+- Language docs:
+  - `bowling-proshop-EN.md`
+  - `bowling-proshop-ES.md`
+  - `bowling-proshop-PT.md`
+  - `bowling-proshop-DE.md`
+  - `bowling-proshop-FR.md`
+  - `bowling-proshop-IT.md`
+
 ## How New Skills Are Documented
 
 For every new skill added to this repository, this README will include:
