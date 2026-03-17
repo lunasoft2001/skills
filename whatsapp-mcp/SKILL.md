@@ -1,6 +1,6 @@
 ---
 name: whatsapp-mcp
-description: Send WhatsApp messages, files (PDF, images, VCF), and manage groups and contacts using the WhatsApp MCP server (whatsapp-web.js). Use this skill when the user wants to send a WhatsApp message, find a contact, list groups, send a document or image via WhatsApp, add/remove group members, or get chat history. Also use when the user asks how to install or configure the WhatsApp MCP. Triggers on: "send WhatsApp", "mensaje WhatsApp", "mandar por WhatsApp", "enviar archivo WhatsApp", "grupo WhatsApp", "contacto WhatsApp", "instalar MCP WhatsApp".
+description: "Send WhatsApp messages, files (PDF, images, VCF), and manage groups and contacts using the WhatsApp MCP server (whatsapp-web.js). Use this skill when the user wants to send a WhatsApp message, find a contact, list groups, send a document or image via WhatsApp, add/remove group members, or get chat history. Also use when the user asks how to install or configure the WhatsApp MCP. Triggers on: send WhatsApp, mensaje WhatsApp, mandar por WhatsApp, enviar archivo WhatsApp, grupo WhatsApp, contacto WhatsApp, instalar MCP WhatsApp."
 ---
 
 # WhatsApp MCP Skill
