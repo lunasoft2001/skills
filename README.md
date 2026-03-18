@@ -2,6 +2,27 @@
 
 This public repository stores reusable skills that can be installed and used with GitHub Copilot workflows.
 
+## Repository Structure
+
+```
+skills/
+├── README.md                   ← you are here
+├── translations/               ← skill descriptions in DE, EN, ES, FR, IT, PT
+│   ├── access-analyzer-EN.md
+│   ├── access-analyzer-ES.md
+│   └── ...
+├── access-analyzer/            ← skill folder (SKILL.md + scripts + references)
+├── bowling-proshop/
+├── m365-email-manager-skill/
+├── mcp-evaluator/
+├── responsible-ai-skill-evaluator/
+├── vbaExcel/
+└── whatsapp-mcp/
+```
+
+Each skill folder contains its own `SKILL.md` (the file GitHub Copilot reads) plus optional `scripts/`, `references/`, and `assets/` subfolders.  
+The `translations/` folder contains human-readable descriptions of each skill in multiple languages — useful for non-technical users who want to understand what a skill does before installing it.
+
 ## Skills Catalog
 
 ### access-analyzer
@@ -14,12 +35,12 @@ This public repository stores reusable skills that can be installed and used wit
   - `access-analyzer/references/`
   - `access-analyzer/assets/`
 - Language docs:
-  - `access-analyzer-EN.md`
-  - `access-analyzer-ES.md`
-  - `access-analyzer-PT.md`
-  - `access-analyzer-DE.md`
-  - `access-analyzer-FR.md`
-  - `access-analyzer-IT.md`
+  - `translations/access-analyzer-EN.md`
+  - `translations/access-analyzer-ES.md`
+  - `translations/access-analyzer-PT.md`
+  - `translations/access-analyzer-DE.md`
+  - `translations/access-analyzer-FR.md`
+  - `translations/access-analyzer-IT.md`
 
 ### vbaExcel
 - Purpose: Extract, refactor, and re-import VBA code for Excel macro-enabled workbooks (`.xlsm`) on Windows.
@@ -30,12 +51,12 @@ This public repository stores reusable skills that can be installed and used wit
   - `vbaExcel/INSTALL.txt`
   - `vbaExcel/scripts/`
 - Language docs:
-  - `vbaExcel-EN.md`
-  - `vbaExcel-ES.md`
-  - `vbaExcel-PT.md`
-  - `vbaExcel-DE.md`
-  - `vbaExcel-FR.md`
-  - `vbaExcel-IT.md`
+  - `translations/vbaExcel-EN.md`
+  - `translations/vbaExcel-ES.md`
+  - `translations/vbaExcel-PT.md`
+  - `translations/vbaExcel-DE.md`
+  - `translations/vbaExcel-FR.md`
+  - `translations/vbaExcel-IT.md`
 
 ### m365-email-manager-skill
 - Purpose: Manage Microsoft 365 email (Outlook/Exchange Online) through Microsoft Graph with reusable CLI workflows.
@@ -46,12 +67,12 @@ This public repository stores reusable skills that can be installed and used wit
   - `m365-email-manager-skill/scripts/`
   - `m365-email-manager-skill/references/`
 - Language docs:
-  - `m365-email-manager-skill-EN.md`
-  - `m365-email-manager-skill-ES.md`
-  - `m365-email-manager-skill-PT.md`
-  - `m365-email-manager-skill-DE.md`
-  - `m365-email-manager-skill-FR.md`
-  - `m365-email-manager-skill-IT.md`
+  - `translations/m365-email-manager-skill-EN.md`
+  - `translations/m365-email-manager-skill-ES.md`
+  - `translations/m365-email-manager-skill-PT.md`
+  - `translations/m365-email-manager-skill-DE.md`
+  - `translations/m365-email-manager-skill-FR.md`
+  - `translations/m365-email-manager-skill-IT.md`
 
 ### bowling-proshop
 - Purpose: Virtual bowling ball driller and lane coach using the Dual Angle layout system (Mo Pinel style).
@@ -63,12 +84,12 @@ This public repository stores reusable skills that can be installed and used wit
   - `bowling-proshop/references/current-balls-2026.md`
   - `bowling-proshop/references/dual-angle.md`
 - Language docs:
-  - `bowling-proshop-EN.md`
-  - `bowling-proshop-ES.md`
-  - `bowling-proshop-PT.md`
-  - `bowling-proshop-DE.md`
-  - `bowling-proshop-FR.md`
-  - `bowling-proshop-IT.md`
+  - `translations/bowling-proshop-EN.md`
+  - `translations/bowling-proshop-ES.md`
+  - `translations/bowling-proshop-PT.md`
+  - `translations/bowling-proshop-DE.md`
+  - `translations/bowling-proshop-FR.md`
+  - `translations/bowling-proshop-IT.md`
 
 ### mcp-evaluator
 - Purpose: Audit MCP servers (Model Context Protocol) for security, privacy, and technical quality through a 3-phase evaluation.
@@ -79,12 +100,12 @@ This public repository stores reusable skills that can be installed and used wit
   - `mcp-evaluator/references/mcp-rai-checklist.md`
   - `mcp-evaluator/references/mcp-quality-checklist.md`
 - Language docs:
-  - `mcp-evaluator-EN.md`
-  - `mcp-evaluator-ES.md`
-  - `mcp-evaluator-PT.md`
-  - `mcp-evaluator-DE.md`
-  - `mcp-evaluator-FR.md`
-  - `mcp-evaluator-IT.md`
+  - `translations/mcp-evaluator-EN.md`
+  - `translations/mcp-evaluator-ES.md`
+  - `translations/mcp-evaluator-PT.md`
+  - `translations/mcp-evaluator-DE.md`
+  - `translations/mcp-evaluator-FR.md`
+  - `translations/mcp-evaluator-IT.md`
 
 ### responsible-ai-skill-evaluator
 - Purpose: Evaluate whether a skill (SKILL.md) complies with Microsoft's 6 Responsible AI principles and AgentSkills.io format and quality standards.
@@ -95,12 +116,12 @@ This public repository stores reusable skills that can be installed and used wit
   - `responsible-ai-skill-evaluator/references/microsoft-rai-checklist.md`
   - `responsible-ai-skill-evaluator/references/agentskills-quality-checklist.md`
 - Language docs:
-  - `responsible-ai-skill-evaluator-EN.md`
-  - `responsible-ai-skill-evaluator-ES.md`
-  - `responsible-ai-skill-evaluator-PT.md`
-  - `responsible-ai-skill-evaluator-DE.md`
-  - `responsible-ai-skill-evaluator-FR.md`
-  - `responsible-ai-skill-evaluator-IT.md`
+  - `translations/responsible-ai-skill-evaluator-EN.md`
+  - `translations/responsible-ai-skill-evaluator-ES.md`
+  - `translations/responsible-ai-skill-evaluator-PT.md`
+  - `translations/responsible-ai-skill-evaluator-DE.md`
+  - `translations/responsible-ai-skill-evaluator-FR.md`
+  - `translations/responsible-ai-skill-evaluator-IT.md`
 
 ## How New Skills Are Documented
 
