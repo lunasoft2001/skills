@@ -70,6 +70,22 @@ This public repository stores reusable skills that can be installed and used wit
   - `bowling-proshop-FR.md`
   - `bowling-proshop-IT.md`
 
+### responsible-ai-skill-evaluator
+- Purpose: Evaluate whether a skill (SKILL.md) complies with Microsoft's 6 Responsible AI principles and AgentSkills.io format and quality standards.
+- What it includes: Evaluation workflow, Microsoft RAI checklist, and AgentSkills.io quality checklist as reference files.
+- Typical use cases: Auditing a skill before publishing, checking RAI compliance, getting a structured PASS/PARTIAL/FAIL report with actionable fixes.
+- Main files:
+  - `responsible-ai-skill-evaluator/SKILL.md`
+  - `responsible-ai-skill-evaluator/references/microsoft-rai-checklist.md`
+  - `responsible-ai-skill-evaluator/references/agentskills-quality-checklist.md`
+- Language docs:
+  - `responsible-ai-skill-evaluator-EN.md`
+  - `responsible-ai-skill-evaluator-ES.md`
+  - `responsible-ai-skill-evaluator-PT.md`
+  - `responsible-ai-skill-evaluator-DE.md`
+  - `responsible-ai-skill-evaluator-FR.md`
+  - `responsible-ai-skill-evaluator-IT.md`
+
 ## How New Skills Are Documented
 
 For every new skill added to this repository, this README will include:
