@@ -1,9 +1,13 @@
 ---
 name: m365-email-manager-skill
-description: Manage Microsoft 365 (Outlook/Exchange Online) email using Microsoft Graph. Use when you need to list recent or unread emails, search messages by text, mark messages as read, move emails between folders, reply to or send emails in an automated and repeatable way. Setup once, use forever with tokens stored securely using cross-platform local storage.
+description: "Manage Microsoft 365 (Outlook/Exchange Online) email using Microsoft Graph. Use when you need to list recent or unread emails, search messages by text, mark messages as read, move emails between folders, reply to or send emails in an automated and repeatable way. Setup once, use forever with tokens stored securely using cross-platform local storage. Triggers on: list emails, send email, search inbox, mark as read, move email, reply email, M365 mail, Outlook Graph, gestionar correo, enviar email, buscar correo."
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # M365 Email Manager
+
+> ⚠️ **Privacy note**: emails contain personal data (names, addresses, message content). Do not log or expose email bodies beyond what is necessary for the current operation.
 
 ## Overview
 

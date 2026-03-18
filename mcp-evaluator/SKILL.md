@@ -2,6 +2,7 @@
 name: mcp-evaluator
 description: Evaluates MCP servers (Model Context Protocol) for security, safety, privacy, and quality. Analyzes source code (TypeScript/Python), mcp.json configuration, tool definitions, and companion SKILL.md. Checks for hardcoded credentials, missing confirmation steps before destructive operations (publish, send, delete), PII handling, token security, error handling, and tool description quality. Produces a structured PASS/PARTIAL/FAIL audit report. Use when: audit MCP, evaluate MCP server, check MCP security, review MCP tools, is my MCP safe, MCP ready to publish, evaluar MCP, auditar servidor MCP, revisar seguridad MCP.
 license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # MCP Evaluator

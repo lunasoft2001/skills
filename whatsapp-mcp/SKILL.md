@@ -1,6 +1,8 @@
 ---
 name: whatsapp-mcp
 description: "Send WhatsApp messages, files (PDF, images, VCF), and manage groups and contacts using the WhatsApp MCP server (whatsapp-web.js). Use this skill when the user wants to send a WhatsApp message, find a contact, list groups, send a document or image via WhatsApp, add/remove group members, or get chat history. Also use when the user asks how to install or configure the WhatsApp MCP. Triggers on: send WhatsApp, mensaje WhatsApp, mandar por WhatsApp, enviar archivo WhatsApp, grupo WhatsApp, contacto WhatsApp, instalar MCP WhatsApp."
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # WhatsApp MCP Skill
@@ -44,6 +46,7 @@ Antes de cualquier operación, ejecuta `healthcheck_whatsapp`. Interpreta el res
 
 ### Historial de chat
 - `get_chat_messages` con `chatId` y `limit` (máx 100)
+- ⚠️ Los mensajes contienen datos personales (números de teléfono, texto de conversaciones). No almacenar ni exponer más allá de lo necesario para la operación actual.
 
 ## Reglas importantes
 

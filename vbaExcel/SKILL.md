@@ -1,6 +1,8 @@
 ---
 name: vbaExcel
-description: Extract and re-import VBA code from Excel .xlsm files on Windows using Python (pywin32/oletools) or VBScript. Use it to export .bas modules, refactor in VS Code, and import changes back into the XLSM.
+description: "Extract and re-import VBA code from Excel .xlsm files on Windows using Python (pywin32/oletools) or VBScript. Use when: exporting VBA modules from XLSM, refactoring Excel macros in VS Code, importing .bas files back into a workbook, enabling VBProject access. Triggers on: export VBA, import VBA, vbaExcel, extraer macros Excel, importar VBA, refactorizar VBA, módulos VBA, xlsm macros."
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # vbaExcel
@@ -23,6 +25,8 @@ description: Extract and re-import VBA code from Excel .xlsm files on Windows us
 - Edit the `.bas` files in VS Code (or in the VBA editor).
 
 ### 3) Re-import
+
+⚠️ **Always create a backup of the `.xlsm` file before importing** — the import overwrites existing VBA modules and cannot be undone.
 
 - Run `scripts/import_vba.py` to replace each module's code.
 

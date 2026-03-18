@@ -2,6 +2,7 @@
 name: bowling-proshop
 description: Virtual ball driller and lane coach for bowling pro shops. Uses Dual Angle layout system (Mo Pinel style) to recommend balls, layouts, surface prep, and adjustments. Triggers when users ask about: ball selection, drilling layouts, Dual Angle, pin-to-PAP, VAL angle, rev rate, axis rotation, axis tilt, PAP, ball surface, lane patterns, oil patterns, bowling equipment, spare ball, proshop fitting, layout recommendation, hook potential, ball motion, or any bowling-specific technical question. Also triggers on: "qué bola uso", "layout", "patrón de aceite", "taladrado", "perforación".
 license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Bowling Pro Shop — Virtual Ball Driller & Lane Coach

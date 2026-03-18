@@ -2,6 +2,7 @@
 name: responsible-ai-skill-evaluator
 description: Evaluates whether a skill (SKILL.md) complies with Microsoft's 6 Responsible AI principles (Fairness, Reliability & Safety, Privacy & Security, Inclusiveness, Transparency, Accountability) and with AgentSkills.io format and quality standards. Use when asked to audit, review, verify, certify, or check a skill for responsible AI compliance, or to assess if a skill is ready for public publishing. Triggers on: "evaluate this skill", "audit skill for responsible AI", "check skill compliance", "review SKILL.md", "is this skill RAI compliant", "skill certification", "verify skill quality", "skill ready to publish".
 license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Responsible AI Skill Evaluator

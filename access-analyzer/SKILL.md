@@ -2,6 +2,7 @@
 name: access-analyzer
 description: "Analyze, export, refactor, and re-import Microsoft Access database applications. Use when working with .accdb/.mdb files to: (1) Create backups, (2) Export all objects (tables, queries, forms, reports, macros, VBA) to text files for version control and analysis, (3) Optionally export table data or structure-only, (4) Refactor exported code in VS Code, (5) Import changes back into Access. Includes automated export module based on ExportTodoSimple.bas."
 license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Microsoft Access Analyzer & Refactoring Tool
@@ -84,18 +85,18 @@ Ask user for the path to the .accdb or .mdb file, or search workspace.
 **CRITICAL: Always ask the user BEFORE running any export script:**
 
 ```
-¿Deseas exportar los DATOS de las tablas junto con la estructura?
+ï¿½Deseas exportar los DATOS de las tablas junto con la estructura?
 
-  [S] SÍ  - Exporta estructura + datos (.table + .tabledata)
-          Útil para: backups completos, migración de datos
+  [S] Sï¿½  - Exporta estructura + datos (.table + .tabledata)
+          ï¿½til para: backups completos, migraciï¿½n de datos
 
-  [N] NO  - Exporta solo estructura (.table únicamente)
-          Útil para: control de versiones Git, refactorización
+  [N] NO  - Exporta solo estructura (.table ï¿½nicamente)
+          ï¿½til para: control de versiones Git, refactorizaciï¿½n
 ```
 
 **When to recommend each option:**
 - Use `-ExportTableData:$false` (NO) for: code analysis, refactoring, Git version control
-- Use `-ExportTableData:$true` (SÍ) for: complete backups, data migration, archival
+- Use `-ExportTableData:$true` (Sï¿½) for: complete backups, data migration, archival
 
 ### Step 3: Create Backup
 ```powershell
@@ -124,7 +125,7 @@ Use the [access-export-git.ps1](./scripts/access-export-git.ps1) script.
 # If user chose NO (solo estructura)
 .\access-export-git.ps1 -DatabasePath "path\to\db.accdb" -ExportTableData:$false
 
-# If user chose SÍ (estructura + datos)
+# If user chose Sï¿½ (estructura + datos)
 .\access-export-git.ps1 -DatabasePath "path\to\db.accdb" -ExportTableData:$true
 ```
 
@@ -232,25 +233,25 @@ Al exportar con `access-export-git.ps1`, se genera automÃ¡ticamente un **Plan de
 
 ## Important Notes
 
-### Cuándo Exportar Datos vs Solo Estructura
+### Cuï¿½ndo Exportar Datos vs Solo Estructura
 
 **Exportar SOLO estructura** (`-ExportTableData:$false`):
-- ? Control de versiones Git (archivos más pequeños)
-- ? Análisis de esquema de base de datos
-- ? Refactorización de código VBA y queries
-- ? Documentación de estructura
-- ? Comparación de versiones de esquema
+- ? Control de versiones Git (archivos mï¿½s pequeï¿½os)
+- ? Anï¿½lisis de esquema de base de datos
+- ? Refactorizaciï¿½n de cï¿½digo VBA y queries
+- ? Documentaciï¿½n de estructura
+- ? Comparaciï¿½n de versiones de esquema
 - ?? Los archivos `.tabledata` no se versionan bien en Git (grandes, binarios)
 
 **Exportar estructura + datos** (`-ExportTableData:$true`):
 - ? Backup completo antes de migraciones
 - ? Transferir datos entre entornos
-- ? Archivar estado completo de la aplicación
-- ? Análisis de datos reales
-- ? Testing con datos de producción
-- ?? Archivos más grandes, commit Git pesado
+- ? Archivar estado completo de la aplicaciï¿½n
+- ? Anï¿½lisis de datos reales
+- ? Testing con datos de producciï¿½n
+- ?? Archivos mï¿½s grandes, commit Git pesado
 
-**Recomendación general:** Para workflows de refactorización con Git, usa `-ExportTableData:$false`. Solo incluye datos para backups específicos fuera de Git.
+**Recomendaciï¿½n general:** Para workflows de refactorizaciï¿½n con Git, usa `-ExportTableData:$false`. Solo incluye datos para backups especï¿½ficos fuera de Git.
 
 ### UTF-8 Encoding
 All exports use UTF-8 encoding. VS Code will display Spanish characters perfectly:
@@ -291,18 +292,18 @@ ExportaciÃ³n automatizada con control de versiones Git integrado.
 # Estructura + datos - backup completo
 .\access-export-git.ps1 -DatabasePath "C:\export\test\appGraz.accdb" -ExportTableData:$true
 
-# Con idioma específico
+# Con idioma especï¿½fico
 .\access-export-git.ps1 -DatabasePath "C:\export\test\appGraz.accdb" -Language "EN"
 ```
 
-**Parámetros:**
+**Parï¿½metros:**
 - `-DatabasePath`: Ruta al archivo .accdb/.mdb (obligatorio)
 - `-ExportTableData`: `$true` = estructura + datos, `$false` = solo estructura (pregunta si se omite)
-- `-Language`: Idioma de exportación (ES/EN/DE/FR/IT, default: ES)
+- `-Language`: Idioma de exportaciï¿½n (ES/EN/DE/FR/IT, default: ES)
 - `-ExportFolder`: Carpeta destino (default: `{DatabaseName}_Export`)
 
-**Características:**
-- **Pregunta interactivamente** si exportar datos de tablas (si no se especifica parámetro)
+**Caracterï¿½sticas:**
+- **Pregunta interactivamente** si exportar datos de tablas (si no se especifica parï¿½metro)
 - Exporta a carpeta persistente: `{DatabaseName}_Export`
 - Inicializa repositorio Git automÃ¡ticamente
 - Crea .gitignore para archivos temporales (.ldb, backups, errors)
@@ -376,10 +377,10 @@ Create timestamped backup of Access file.
 ### Pattern 1: Workflow Completo con Git (RECOMENDADO)
 ```powershell
 # Claude pregunta PRIMERO:
-# "¿Deseas exportar los DATOS de las tablas? (S/N)"
+# "ï¿½Deseas exportar los DATOS de las tablas? (S/N)"
 # Usuario responde: "N" (solo estructura para Git)
 
-# 1. Primera exportación con Git (solo estructura - ideal para control de versiones)
+# 1. Primera exportaciï¿½n con Git (solo estructura - ideal para control de versiones)
 cd C:\Users\juanjo_admin\.copilot\skills\access-analyzer\scripts
 .\access-export-git.ps1 -DatabasePath "C:\export\test\appGraz.accdb" -ExportTableData:$false
 
@@ -421,8 +422,8 @@ git revert HEAD                # Deshacer Ãºltimo commit
 ```
 User: "Analyze this Access database: C:\project\inventory.accdb"
 
-Claude asks: "¿Deseas exportar los DATOS de las tablas? (S/N)"
-User: "N" (solo necesito analizar código)
+Claude asks: "ï¿½Deseas exportar los DATOS de las tablas? (S/N)"
+User: "N" (solo necesito analizar cï¿½digo)
 
 1. Create backup
 2. Export structure only (-ExportTableData:$false)
@@ -435,8 +436,8 @@ User: "N" (solo necesito analizar código)
 ```
 User: "Create a complete backup with data for migration"
 
-Claude asks: "¿Deseas exportar los DATOS de las tablas? (S/N)"
-User: "S" (necesito los datos para migración)
+Claude asks: "ï¿½Deseas exportar los DATOS de las tablas? (S/N)"
+User: "S" (necesito los datos para migraciï¿½n)
 
 1. Create timestamped backup of .accdb file
 2. Export with -ExportTableData:$true
