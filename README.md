@@ -70,6 +70,22 @@ This public repository stores reusable skills that can be installed and used wit
   - `bowling-proshop-FR.md`
   - `bowling-proshop-IT.md`
 
+### mcp-evaluator
+- Purpose: Audit MCP servers (Model Context Protocol) for security, privacy, and technical quality through a 3-phase evaluation.
+- What it includes: Evaluation workflow, RAI+OWASP security checklist for MCPs, and technical quality checklist.
+- Typical use cases: Checking if an MCP has hardcoded credentials, verifying destructive tools have confirmation steps, assessing companion SKILL.md coverage, validating error handling and dependency security.
+- Main files:
+  - `mcp-evaluator/SKILL.md`
+  - `mcp-evaluator/references/mcp-rai-checklist.md`
+  - `mcp-evaluator/references/mcp-quality-checklist.md`
+- Language docs:
+  - `mcp-evaluator-EN.md`
+  - `mcp-evaluator-ES.md`
+  - `mcp-evaluator-PT.md`
+  - `mcp-evaluator-DE.md`
+  - `mcp-evaluator-FR.md`
+  - `mcp-evaluator-IT.md`
+
 ### responsible-ai-skill-evaluator
 - Purpose: Evaluate whether a skill (SKILL.md) complies with Microsoft's 6 Responsible AI principles and AgentSkills.io format and quality standards.
 - What it includes: Evaluation workflow, Microsoft RAI checklist, and AgentSkills.io quality checklist as reference files.
