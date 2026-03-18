@@ -21,85 +21,17 @@ Usa **siempre `vscode_askQuestions`** para recoger datos — nunca tires bloques
 
 ### FASE 1 — Arranque
 
-Lanza este form con `vscode_askQuestions`:
+Lanza el form con `vscode_askQuestions` usando el esquema de `references/phases.json → phases.fase1.form`.
 
-```json
-[
-  {
-    "header": "mano",
-    "question": "¿Mano dominante y estilo de juego?",
-    "options": [
-      {"label": "Diestro — una mano", "recommended": true},
-      {"label": "Diestro — dos manos"},
-      {"label": "Zurdo — una mano"},
-      {"label": "Zurdo — dos manos"}
-    ]
-  },
-  {
-    "header": "tipo_pista",
-    "question": "¿En qué tipo de pista juegas habitualmente?",
-    "options": [
-      {"label": "Pista de casa (house shot)", "recommended": true},
-      {"label": "Sport pattern"},
-      {"label": "Challenge / PBA pattern"},
-      {"label": "Varía / no lo sé"}
-    ]
-  },
-  {
-    "header": "objetivo",
-    "question": "¿Qué buscas mejorar o conseguir?",
-    "allowFreeformInput": true,
-    "options": [
-      {"label": "Más carry / más strikes"},
-      {"label": "Abrir más ángulo / más hook"},
-      {"label": "Más control y consistencia", "recommended": true},
-      {"label": "Jugar recto a spares"},
-      {"label": "Empezar a usar el hook"}
-    ]
-  }
-]
-```
+> **Campos**: `mano`, `tipo_pista`, `objetivo`
 
 ---
 
 ### FASE 2 — Perfil físico del jugador
 
-```json
-[
-  {
-    "header": "velocidad",
-    "question": "¿Cuál es tu velocidad de bola?",
-    "allowFreeformInput": true,
-    "options": [
-      {"label": "Lento — menos de 13 mph"},
-      {"label": "Medio — 13–16 mph", "recommended": true},
-      {"label": "Rápido — más de 16 mph"}
-    ]
-  },
-  {
-    "header": "rev_rate",
-    "question": "¿Sabes tu rev rate? Si no, ¿cuánto hook ves?",
-    "allowFreeformInput": true,
-    "options": [
-      {"label": "Poco hook (stroker ~150–220 rpm)"},
-      {"label": "Hook medio (tweener ~250–330 rpm)", "recommended": true},
-      {"label": "Mucho hook (cranker ~350–450 rpm)"},
-      {"label": "Sé mi rpm exacto — lo escribo abajo"}
-    ]
-  },
-  {
-    "header": "pap_track",
-    "question": "¿Tienes medido tu PAP? Si no, ¿cómo es tu track?",
-    "allowFreeformInput": true,
-    "options": [
-      {"label": "Track alto (cerca del pulgar)"},
-      {"label": "Track medio", "recommended": true},
-      {"label": "Track bajo (cerca del anular)"},
-      {"label": "Tengo el PAP exacto — lo escribo abajo"}
-    ]
-  }
-]
-```
+Lanza el form con `vscode_askQuestions` usando el esquema de `references/phases.json → phases.fase2.form`.
+
+> **Campos**: `velocidad`, `rev_rate`, `pap_track`
 
 Tras recibir fase 2, **confirma el diagnóstico parcial en voz alta** antes de continuar:
 ```
@@ -114,39 +46,9 @@ Tras recibir fase 2, **confirma el diagnóstico parcial en voz alta** antes de c
 
 ### FASE 3 — Patrón y arsenal
 
-```json
-[
-  {
-    "header": "superficie_pista",
-    "question": "¿La superficie de la pista es madera o sintética?",
-    "options": [
-      {"label": "Madera"},
-      {"label": "Sintética", "recommended": true},
-      {"label": "No lo sé"}
-    ]
-  },
-  {
-    "header": "agarre",
-    "question": "¿Cómo agarra la pista?",
-    "options": [
-      {"label": "Muy resbaladiza — la bola no engancha"},
-      {"label": "Normal", "recommended": true},
-      {"label": "Agarra mucho — demasiado hook"}
-    ]
-  },
-  {
-    "header": "arsenal",
-    "question": "¿Qué bolas tienes ya?",
-    "allowFreeformInput": true,
-    "options": [
-      {"label": "Ninguna / empezando"},
-      {"label": "Solo una bola (casa / polished)"},
-      {"label": "Tengo 2–3 bolas"},
-      {"label": "Arsenal completo (+4 bolas)"}
-    ]
-  }
-]
-```
+Lanza el form con `vscode_askQuestions` usando el esquema de `references/phases.json → phases.fase3.form`.
+
+> **Campos**: `superficie_pista`, `agarre`, `arsenal`
 
 ---
 
@@ -154,28 +56,9 @@ Tras recibir fase 2, **confirma el diagnóstico parcial en voz alta** antes de c
 
 Con todos los datos, muestra el diagnóstico y la recomendación en el formato estándar (ver sección siguiente).
 
-Al final, **ofrece el reporte visual** con un form:
+Al final, **ofrece el reporte visual** con el form de `references/phases.json → phases.fase4.reporte_form`.
 
-```json
-[
-  {
-    "header": "reporte",
-    "question": "¿Quieres que genere tu reporte visual LunaBowling?",
-    "options": [
-      {"label": "¡Sí, generar reporte! 🎳", "recommended": true},
-      {"label": "No, solo el texto está bien"}
-    ]
-  },
-  {
-    "header": "nombre_jugador",
-    "question": "¿Cómo te llamo en el reporte?",
-    "allowFreeformInput": true,
-    "options": [
-      {"label": "Jugador anónimo"}
-    ]
-  }
-]
-```
+> **Campos**: `reporte`, `nombre_jugador`
 
 ---
 

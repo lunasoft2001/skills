@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "skill": "bowling-proshop",
+  "evals": [
+    {
+      "id": "bp-01-trigger-es",
+      "description": "El skill se activa ante una pregunta básica en español sobre selección de bola",
+      "prompt": "Hola, quiero saber qué bola de bowling debería usar. Soy diestro y juego en pista de casa.",
+      "assertions": [
+        "El agente usa vscode_askQuestions para la Fase 1 — no lanza preguntas en texto plano",
+        "El form de Fase 1 incluye preguntas sobre mano dominante, tipo de pista y objetivo",
+        "El agente NO recomienda ninguna bola todavía — espera a completar las fases"
+      ]
+    },
+    {
+      "id": "bp-02-trigger-en",
+      "description": "El skill se activa ante una pregunta en inglés sobre layout",
+      "prompt": "I need a Dual Angle layout recommendation. My PAP is 5 inches right, 0.5 up, rev rate around 320 rpm, speed 15 mph.",
+      "assertions": [
+        "El agente responde en inglés (detecta idioma del usuario)",
+        "El agente calcula o solicita confirmación del tipo de jugador (matched / rev-dominant / speed-dominant)",
+        "El agente produce un layout en formato DA × Pin-to-PAP × VAL",
+        "El layout tiene 3 componentes numéricos separados por ×"
+      ]
+    },
+    {
+      "id": "bp-03-full-flow",
+      "description": "Flujo completo: el agente pasa las 4 fases y produce diagnóstico completo",
+      "prompt": "Necesito consejo completo para mi arsenal. Soy diestro de una mano, tweener, unos 280 rpm, velocidad 15 mph, track medio, juego house shot en sintética, tengo solo una bola de poliéster.",
+      "assertions": [
+        "El agente no lanza las 4 fases juntas — usa el flujo secuencial con vscode_askQuestions",
+        "El diagnóstico incluye la clasificación del jugador (speed-dominant / matched / rev-dominant)",
+        "La bola recomendada aparece en references/current-balls-2026.md — no es una bola inventada",
+        "El output incluye las secciones: Diagnóstico, Bola recomendada, Layout Dual Angle, Ajustes rápidos",
+        "El layout sigue el formato DA × Pin-to-PAP × VAL con valores numéricos",
+        "El agente ofrece generar el reporte visual al final"
+      ]
+    },
+    {
+      "id": "bp-04-no-fabrication",
+      "description": "El agente NO inventa datos ni recomienda bolas descatalogadas cuando le falta información",
+      "prompt": "Quiero un layout para la Storm Phaze IV.",
+      "assertions": [
+        "Si falta PAP, el agente pide el PAP antes de dar el layout — no inventa valores",
+        "El agente verifica que 'Storm Phaze IV' aparece en references/current-balls-2026.md antes de recomendarla",
+        "Si la bola no está en el catálogo, el agente avisa que puede estar descatalogada y sugiere alternativas del catálogo actual"
+      ]
+    },
+    {
+      "id": "bp-05-spare-ball",
+      "description": "El agente responde directamente a preguntas concretas sin forzar el flujo completo de 4 fases",
+      "prompt": "Solo quiero saber qué bola usar para tirar spares rectos.",
+      "assertions": [
+        "El agente responde directamente sin forzar la Fase 1-4 completa",
+        "El agente recomienda una bola de uretano o poliéster para spares",
+        "La respuesta es concisa — no genera diagnóstico completo innecesario"
+      ]
+    },
+    {
+      "id": "bp-06-edge-no-pap",
+      "description": "Edge case: el usuario da datos mínimos sin PAP — el agente estima y lo declara",
+      "prompt": "Soy cranker, mucho hook, rápido. ¿Qué layout me pones?",
+      "assertions": [
+        "El agente no da un layout con PIN-to-PAP exacto sin conocer el PAP",
+        "El agente declara explícitamente qué está estimando y por qué",
+        "El agente explica cómo medir el PAP o recomienda acudir al proshop",
+        "Si da un rango de layout, lo presenta como estimación provisional, no como recomendación definitiva"
+      ]
+    },
+    {
+      "id": "bp-07-lane-adjustment",
+      "description": "El agente da ajustes de pista cuando la bola no rinde como esperado",
+      "prompt": "Mi bola está enganchando demasiado pronto. ¿Qué hago? Uso una Motiv Jackal Ghost.",
+      "assertions": [
+        "El agente sugiere ajustes de posición (pies/target) antes de recomendar cambiar de bola",
+        "El agente menciona opción de superficies (pulir la bola) como alternativa",
+        "El agente verifica que 'Motiv Jackal Ghost' está en el catálogo o advierte si no"
+      ]
+    }
+  ]
+}
