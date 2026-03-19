@@ -48,11 +48,31 @@ Antes de cualquier operación, ejecuta `healthcheck_whatsapp`. Interpreta el res
 - `get_chat_messages` con `chatId` y `limit` (máx 100)
 - ⚠️ Los mensajes contienen datos personales (números de teléfono, texto de conversaciones). No almacenar ni exponer más allá de lo necesario para la operación actual.
 
+## Normalización de números de teléfono
+
+El MCP normaliza automáticamente los números antes de usarlos. Formato interno: `<dígitos>@c.us`.
+
+| Formato de entrada | Resultado | Caso de uso |
+|---|---|---|
+| `+34619880445` | `34619880445@c.us` | Número español con `+` |
+| `34619880445` | `34619880445@c.us` | Número español sin `+` |
+| `069912294428` | `4369912294428@c.us` | Número local austriaco (comienza con `0`) |
+| `43699123456` | `43699123456@c.us` | Número austriaco completo |
+| `16505551234` | `16505551234@c.us` | Número USA |
+
+**Reglas de normalización (`normalizePhoneToWaId`):**
+1. Se eliminan espacios, guiones y paréntesis.
+2. Se elimina el `+` inicial si existe.
+3. Si empieza con `0` → número local (ej. Austria `069x`) → se reemplaza el `0` por el `DEFAULT_COUNTRY_CODE` configurado (`43` por defecto).
+4. Si ya tiene un código de país diferente al configurado (ej. `34...`, `1...`) → **no se modifica**. Pasar tal cual.
+
+> ⚠️ **Error histórico**: Antes de la corrección del 2025-06, el server añadía `43` a cualquier número no local, causando que números españoles `34619880445` → `4334619880445@c.us` ❌. Esto está corregido en `src/whatsapp/client.ts`.
+
 ## Reglas importantes
 
 - **Siempre dryRun primero** antes de enviar — nunca enviar sin confirmación del usuario.
 - Los `chatId` para contactos terminan en `@c.us`, para grupos en `@g.us`.
-- Para números austriacos: el código de país es `43`. Los locales `069x` se normalizan automáticamente.
+- Para números no austriacos (ej. españoles `34...`, americanos `1...`): pasar el número completo con código de país. El MCP lo detecta automáticamente y **no** le añade el `43`.
 - PDFs e imágenes: `send_media_message` acepta ruta absoluta en disco del servidor.
 - Si el contacto no aparece: probar con apellido/nombre invertidos o variantes de mayúsculas.
 
