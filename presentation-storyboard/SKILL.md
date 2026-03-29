@@ -1,6 +1,8 @@
 ---
 name: presentation-storyboard
 description: Structures the narrative arc of a presentation slide by slide. For each slide produces a message, objective, recommended duration, and suggested visual. Use when the user wants to plan a presentation, outline slides, define the story arc, create a storyboard, or structure a deck before building it. Triggers on: "storyboard a presentation", "plan my slides", "structure my deck", "outline the presentation", "define slide flow", "planea mis diapositivas", "estructura la presentación", "arma el guión de slides", "define el hilo narrativo".
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Presentation Storyboard
@@ -80,9 +82,43 @@ One paragraph explaining the red thread that connects all slides.
 
 ## Output
 
-Save the storyboard to: `/deliverables/<slug>/storyboard.docx`
+Always produce **two output files** — both are required for the pipeline to work end-to-end:
 
-Use the `docx` skill to produce the `.docx` file if available; otherwise produce the Markdown source so the user can convert it.
+1. **`/deliverables/<slug>/storyboard.docx`** — human-readable document (use the `docx` skill if available; otherwise produce Markdown for the user to convert).
+2. **`/deliverables/<slug>/storyboard.json`** — machine-readable JSON consumed by `presentation-pptx-builder` in Stage 2.
+
+### storyboard.json Schema
+
+Emit this JSON alongside the docx, serializing every slide from the storyboard:
+
+```json
+{
+  "title": "<topic>",
+  "slug": "<slug>",
+  "theme": "corporate",
+  "slides": [
+    {
+      "number": 1,
+      "title": "<Slide Title>",
+      "message": "<One-sentence key message>",
+      "act": "Title | Context | Content | Action | Section break",
+      "duration_min": 2,
+      "visual_type": "title | text | chart | diagram | photo | two-column | section | blank",
+      "body_bullets": ["Optional bullet 1", "Optional bullet 2"]
+    }
+  ]
+}
+```
+
+**Rules for `visual_type`:**
+- Use `"title"` only for slide 1.
+- Use `"chart"` when the visual suggestion from the storyboard is any type of data chart.
+- Use `"diagram"` for flows, processes, org charts, timelines.
+- Use `"photo"` for image-first slides.
+- Use `"text"` for bullet-point slides with no chart or diagram.
+- Use `"section"` for act-break slides.
+
+Save the JSON to `/deliverables/<slug>/storyboard.json` before or alongside the docx. This file is the direct input to `presentation-pptx-builder`'s `--storyboard` argument.
 
 ## Quality Rules
 

@@ -22,9 +22,11 @@ This document defines the input/output contracts for each pipeline stage and the
 ```
 
 **Output contract:**
-- File: `/deliverables/<slug>/storyboard.docx`
-- Also produce: `/deliverables/<slug>/storyboard.json` (machine-readable, used by Stage 2)
-- Success signal: file exists and slide count > 0
+- File 1: `/deliverables/<slug>/storyboard.docx` — human-readable document
+- File 2: `/deliverables/<slug>/storyboard.json` — machine-readable JSON, direct input to Stage 2
+- Success signal: **both files** exist and slide count > 0
+
+> **Stage 1 → Stage 2 handoff**: `storyboard.json` is produced by `presentation-storyboard` as a mandatory co-output of the docx. Stage 2 (`presentation-pptx-builder`) reads `storyboard.json` directly via `--storyboard`. No manual conversion is required when running the full pipeline.
 
 **Expected errors:**
 | Code | Reason | Orchestrator action |

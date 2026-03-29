@@ -1,6 +1,8 @@
 ---
 name: presentation-pptx-builder
 description: Generates a .pptx presentation file consistent with a storyboard. Applies a clean, professional layout to each slide using python-pptx. Use when the user has a storyboard and wants to build the actual PowerPoint deck, generate slides programmatically, or produce a .pptx from structured content. Triggers on: "build the pptx", "generate the deck", "create the PowerPoint", "make the slides file", "produce the .pptx", "genera el pptx", "crea las diapositivas", "arma el PowerPoint", "produce el deck".
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Presentation PPTX Builder
@@ -11,14 +13,18 @@ Convert a storyboard into a `.pptx` file using `scripts/build_pptx.py`. Each sli
 
 | Field | Source | Description |
 |-------|--------|-------------|
-| `storyboard` | `storyboard.docx` or Markdown | Slide-by-slide structure from `presentation-storyboard` |
+| `storyboard` | `/deliverables/<slug>/storyboard.json` (preferred) or Markdown/docx | Slide-by-slide structure from `presentation-storyboard` |
 | `slug` | User / orchestrator | Output folder identifier |
 | `theme` | Optional | Color theme: `corporate` (default) / `minimal` / `dark` / `vibrant` |
 | `logo_path` | Optional | Path to a logo image file to embed on title slide |
 
+**Primary input path**: `presentation-storyboard` always produces `/deliverables/<slug>/storyboard.json` alongside `storyboard.docx`. Use the JSON file directly — it requires no conversion.
+
+**Fallback input**: if only a `.docx` or Markdown storyboard is available (e.g., the user created the storyboard manually), convert it to the JSON schema below before running the script.
+
 ## Build Workflow
 
-1. **Parse the storyboard**: extract each slide's title, message, objective, act, visual suggestion.
+1. **Locate the storyboard JSON**: check `/deliverables/<slug>/storyboard.json` first. If absent, ask whether the storyboard was created with `presentation-storyboard` (it should exist) or offer to convert from docx/Markdown.
 2. **Select layout per slide** (see `references/pptx-design-guide.md`):
    - Title slide → `LAYOUT_TITLE`
    - Content slides → `LAYOUT_CONTENT` or `LAYOUT_TWO_COLUMN`

@@ -15,6 +15,11 @@ skills/
 ├── bowling-proshop/
 ├── m365-email-manager-skill/
 ├── mcp-evaluator/
+├── presentation-bundle-manager/
+├── presentation-factory-orchestrator/
+├── presentation-pptx-builder/
+├── presentation-speaker-notes/
+├── presentation-storyboard/
 ├── responsible-ai-skill-evaluator/
 ├── vbaExcel/
 └── whatsapp-mcp/

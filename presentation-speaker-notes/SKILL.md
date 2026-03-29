@@ -1,6 +1,8 @@
 ---
 name: presentation-speaker-notes
 description: Generates a detailed speaker script for each slide — including per-slide talking points, timing cues, transition phrases, and probable Q&A with suggested answers. Use when the user needs speaker notes, a presenter guide, a talk script, rehearsal notes, or Q&A preparation for a presentation. Triggers on: "write speaker notes", "create a talk script", "generate presenter notes", "Q&A preparation", "rehearsal guide", "timing for my slides", "escribe las notas del presentador", "guión por slide", "prepara el script de la presentación", "notas de orador".
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Presentation Speaker Notes

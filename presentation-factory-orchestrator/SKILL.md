@@ -1,6 +1,8 @@
 ---
 name: presentation-factory-orchestrator
 description: End-to-end orchestrator for creating professional presentations. Routes the full pipeline across four stages — storyboard → pptx-builder → speaker-notes → bundle-manager — and validates minimum inputs before starting. Use when the user wants to create a complete presentation package, build a deck from scratch, or produce a full presentation bundle with slides and speaker guide. Triggers on: "create a presentation", "make a deck", "build slides", "full presentation package", "crea una presentación", "prepara un deck", "necesito diapositivas", "armá una presentación completa".
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Presentation Factory — Orchestrator
@@ -30,7 +32,8 @@ Run stages sequentially. Confirm completion of each before proceeding to the nex
 ```
 Stage 1: presentation-storyboard
   → Input: topic, audience, duration, key_messages, style, language
-  → Output: storyboard.docx saved to /deliverables/<slug>/
+  → Output: storyboard.docx  (human-readable, saved to /deliverables/<slug>/)
+            storyboard.json  (machine-readable, direct input to Stage 2 — no conversion needed)
 
 Stage 2: presentation-pptx-builder
   → Input: storyboard from Stage 1

@@ -1,6 +1,8 @@
 ---
 name: presentation-bundle-manager
 description: Packages all presentation deliverables into a structured project folder, generates an index.xlsx inventory file, and writes a manifest.json with metadata. Use when the user wants to bundle presentation files, create a delivery package, produce a file index, generate a project manifest, or archive a completed presentation project. Triggers on: "bundle the presentation", "package the deliverables", "create the manifest", "generate the index", "finalize the presentation package", "empaqueta la presentación", "crea el índice de archivos", "genera el manifest", "arma el paquete final".
+license: MIT
+author: lunasoft2001 <https://github.com/lunasoft2001>
 ---
 
 # Presentation Bundle Manager
@@ -19,8 +21,9 @@ Collect all deliverables from `/deliverables/<slug>/`, generate `index.xlsx` and
 ## Bundle Workflow
 
 1. **Scan the deliverables folder**: list all files in `/deliverables/<slug>/`.
-2. **Validate expected files**: check that the four core files are present:
+2. **Validate expected files**: check that the five core files are present:
    - `storyboard.docx`
+   - `storyboard.json`
    - `deck.pptx`
    - `speaker-notes.docx`
    - *(index.xlsx and manifest.json will be created in this step)*
@@ -57,6 +60,7 @@ The Excel index has two sheets:
 | File | Type | Size (KB) | Created | Status | Notes |
 |------|------|-----------|---------|--------|-------|
 | storyboard.docx | Document | ... | ... | ✅ Present | |
+| storyboard.json | JSON | ... | ... | ✅ Present | Stage 2 input |
 | deck.pptx | Presentation | ... | ... | ✅ Present | |
 | speaker-notes.docx | Document | ... | ... | ✅ Present | |
 | index.xlsx | Index | ... | ... | ✅ This file | |
@@ -78,6 +82,13 @@ The Excel index has two sheets:
     {
       "file": "storyboard.docx",
       "type": "storyboard",
+      "size_bytes": 0,
+      "sha256": "<hash>",
+      "status": "present"
+    },
+    {
+      "file": "storyboard.json",
+      "type": "storyboard_json",
       "size_bytes": 0,
       "sha256": "<hash>",
       "status": "present"

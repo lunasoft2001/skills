@@ -24,6 +24,7 @@ from pathlib import Path
 
 CORE_FILES = {
     "storyboard.docx":    ("storyboard",    "Document"),
+    "storyboard.json":    ("storyboard_json", "JSON"),
     "deck.pptx":          ("presentation",  "Presentation"),
     "speaker-notes.docx": ("speaker_notes", "Document"),
 }
