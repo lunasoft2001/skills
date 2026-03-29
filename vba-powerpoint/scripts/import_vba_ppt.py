@@ -67,6 +67,8 @@ def import_vba(pptm_path: str, input_dir: str) -> None:
     create_backup(pptm_path)
     print()
 
+    # PowerPoint COM requires Visible = True to avoid hangs during automation.
+    # Unlike Word/Access (which work headless), PowerPoint may briefly show a window.
     ppt = win32com.client.Dispatch("PowerPoint.Application")
     ppt.Visible = True
     pres = None
@@ -107,6 +109,7 @@ def import_vba(pptm_path: str, input_dir: str) -> None:
                 print(f"  ERROR importing {filename}: {e}")
                 errors += 1
 
+        pres.Save()
         pres.Save()
         print(f"\nDone. {imported} modules imported, {errors} errors.")
 

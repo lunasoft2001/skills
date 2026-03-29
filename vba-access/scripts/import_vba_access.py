@@ -115,6 +115,8 @@ def import_vba(accdb_path: str, input_dir: str) -> None:
                 print(f"  ERROR importing {filename}: {e}")
                 errors += 1
 
+        # Access persists VBA module changes when the database is closed cleanly.
+        # CloseCurrentDatabase() triggers an implicit save of VBA project changes.
         print(f"\nDone. {imported} modules imported, {errors} errors.")
 
     except Exception as e:

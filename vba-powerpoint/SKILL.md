@@ -56,6 +56,7 @@ The script **automatically creates a new backup** immediately before importing. 
 - `ThisPresentation` module is exported as `.cls` — edit carefully; it is the presentation event handler.
 - `.potm` templates follow the same workflow; substitute the file path.
 - `UserForm` binary (`.frx`) is skipped — only text code is exported/imported.
+- **PowerPoint COM requires `Visible = True`** — unlike Word and Access, PowerPoint may briefly display a window during automation. This is a COM limitation, not a script error.
 
 ## Included Scripts
 

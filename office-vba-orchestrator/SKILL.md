@@ -37,8 +37,8 @@ This policy applies to ALL skills in the Office VBA suite.
 ## Per-Skill Quick Reference
 
 ### vbaExcel — Excel `.xlsm`
-- Export: `python export_vba.py workbook.xlsm ./exported_vba/`
-- Import: `python import_vba.py workbook.xlsm ./exported_vba/` *(backup first)*
+- Export: `python scripts/export_vba.py workbook.xlsm ./exported_vba/`
+- Import: `python scripts/import_vba.py workbook.xlsm ./exported_vba/` *(backup first)*
 - Enable VBOM: `scripts/enable_vba_access.reg`
 
 ### vba-word — Word `.docm`

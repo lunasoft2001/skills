@@ -35,7 +35,8 @@ def export_vba(pptm_path: str, output_dir: str) -> None:
     print(f"Exporting VBA from: {pptm_path}")
     print(f"Output directory:   {output_dir}\n")
 
-    # PowerPoint often requires Visible = True to avoid COM hangs
+    # PowerPoint COM requires Visible = True to avoid hangs during automation.
+    # Unlike Word/Access (which work headless), PowerPoint may briefly show a window.
     ppt = win32com.client.Dispatch("PowerPoint.Application")
     ppt.Visible = True
     pres = None
