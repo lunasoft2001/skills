@@ -9,17 +9,12 @@ Layout reference and design rules for `presentation-pptx-builder`.
 | Layout key | Use case | python-pptx index |
 |---|---|---|
 | `LAYOUT_TITLE` | Title slide (first slide only) | 0 |
-| `LAYOUT_CONTENT` | Standard content slide with title + body | 1 |
-| `LAYOUT_TWO_COLUMN` | Side-by-side content or comparison | 3 |
-| `LAYOUT_SECTION_HEADER` | Act break / section divider | 2 |
-| `LAYOUT_BLANK` | Closing / Q&A / full-bleed visual | 6 |
+| `LAYOUT_BLANK` | All other slides (content, section, closing) | 6 |
 
 Layout selection by slide type:
-- `act == "Title"` → `LAYOUT_TITLE`
-- `visual_type == "two-column"` → `LAYOUT_TWO_COLUMN`
-- `act == "Section break"` → `LAYOUT_SECTION_HEADER`
-- `visual_type == "blank"` or closing slide → `LAYOUT_BLANK`
-- All others → `LAYOUT_CONTENT`
+- `act == "Title"` or `visual_type == "title"` → `LAYOUT_TITLE` (index 0)
+- `act == "Section break"` or `visual_type == "section"` → `LAYOUT_BLANK` (index 6), accent background applied
+- All others (content, closing, Q&A) → `LAYOUT_BLANK` (index 6)
 
 ---
 
@@ -72,10 +67,11 @@ FONT_BODY        = "Segoe UI"
 
 ## Slide Composition Rules
 
-**Text limits (enforced by script):**
+**Text limits (design guidelines):**
 - Title: max 10 words
 - Subtitle / message: max 20 words
 - Body bullets: max 5 bullets, max 8 words each
+  - Note: the builder currently enforces only the *number* of body bullets (max 5). It does **not** automatically trim or validate title/subtitle word counts or the "max 8 words per bullet" guideline.
 
 **Visual placeholder format:**
 ```

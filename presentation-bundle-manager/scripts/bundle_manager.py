@@ -15,7 +15,6 @@ Requirements:
 import argparse
 import hashlib
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -175,12 +174,10 @@ def build_index_xlsx(folder: Path, entries: list[dict], manifest: dict):
         cell.font = header_font
         cell.alignment = Alignment(horizontal="center")
 
-    core_names = set(CORE_FILES.keys())
-
     for row_idx, d in enumerate(manifest["deliverables"], start=2):
         _, label_type = CORE_FILES.get(d["file"], ("other", "Other"))
         status_str = "✅ Present" if d["status"] == "present" else "❌ Missing"
-        notes = "This file" if d["file"] == "index.xlsx" else ""
+        notes = ""
 
         ws_files.cell(row_idx, 1, d["file"])
         ws_files.cell(row_idx, 2, d.get("type", "other").replace("_", " ").title())
@@ -228,8 +225,30 @@ def main():
 
     manifest = build_manifest(args.slug, folder, entries, args.title, args.author)
 
-    # Write manifest.json
+    # Write manifest.json (initial pass, without self-reference)
     manifest_path = folder / "manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
+
+    # Add manifest.json to entries and deliverables so it appears in index.xlsx
+    # and in the manifest itself (re-write to include self-reference)
+    manifest_info = file_info(manifest_path)
+    entries.append({
+        "file":       "manifest.json",
+        "path":       manifest_path,
+        "size_bytes": manifest_info["size_bytes"],
+        "size_kb":    manifest_info["size_kb"],
+        "created":    manifest_info["created"],
+    })
+    manifest["deliverables"].append({
+        "file":       "manifest.json",
+        "type":       "manifest",
+        "size_bytes": manifest_info["size_bytes"],
+        "sha256":     sha256_file(manifest_path),
+        "status":     "present",
+    })
+
+    # Re-write manifest.json so the file on disk includes itself in deliverables
     with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
     print(f"✅ Saved manifest.json → {manifest_path}")
