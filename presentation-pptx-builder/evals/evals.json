@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "skill": "presentation-pptx-builder",
+  "evals": [
+    {
+      "id": "ppb-01-build-from-storyboard",
+      "description": "Skill converts a storyboard JSON into a runnable build command",
+      "prompt": "Build the PPTX from this storyboard: 8 slides, corporate theme, slug: q3-review-2026. The storyboard JSON is at /deliverables/q3-review-2026/storyboard.json.",
+      "assertions": [
+        "The skill produces the correct build_pptx.py command with --storyboard, --output, and --theme flags",
+        "The output path is /deliverables/q3-review-2026/deck.pptx",
+        "The theme flag is 'corporate'",
+        "The skill confirms slide count matches the storyboard after build"
+      ]
+    },
+    {
+      "id": "ppb-02-storyboard-to-json-conversion",
+      "description": "Skill converts a Markdown storyboard to the required JSON contract before building",
+      "prompt": "I have my storyboard in Markdown but no JSON yet. Here it is:\n\n### Slide 1: The Problem\n**Message**: Customer churn is costing us $2M/year\n**Act**: Context\n**Duration**: ~2 min\n**Visual suggestion**: bar chart\n\n### Slide 2: The Solution\n**Message**: AI-powered retention reduces churn by 40%\n**Act**: Content\n**Duration**: ~3 min\n**Visual suggestion**: diagram",
+      "assertions": [
+        "The skill produces valid JSON matching the storyboard contract schema",
+        "Each slide object has: number, title, message, act, duration_min, visual_type, body_bullets",
+        "The JSON is saved or presented ready to pass to build_pptx.py"
+      ]
+    },
+    {
+      "id": "ppb-03-visual-placeholder-not-fabrication",
+      "description": "Skill inserts placeholder rectangles for charts instead of fabricating data",
+      "prompt": "Build a PPTX with a slide that needs a revenue trend chart. I don't have the data ready yet.",
+      "assertions": [
+        "The skill inserts a labeled placeholder (e.g., '[CHART: Revenue Trend — insert data]') not a fake chart with invented numbers",
+        "The skill explicitly tells the user that a placeholder was used and they need to replace it",
+        "The PPTX file is still generated — the missing data does not block the build"
+      ]
+    },
+    {
+      "id": "ppb-04-missing-dependency-check",
+      "description": "Skill checks for python-pptx dependency and provides install instruction if missing",
+      "prompt": "Generate the deck.pptx for slug: ai-roadmap-2026.",
+      "assertions": [
+        "If python-pptx is not installed, the skill surfaces a clear error with the install command: pip install python-pptx",
+        "The skill does not crash silently — it reports the missing dependency to the user",
+        "The skill retries or confirms after the user installs the dependency"
+      ]
+    },
+    {
+      "id": "ppb-05-theme-selection",
+      "description": "Skill applies the correct theme based on user preference",
+      "prompt": "Build the deck with a dark theme. Slug: product-demo-2026.",
+      "assertions": [
+        "The build command includes --theme dark",
+        "The skill describes the dark theme: dark background (#1A1A2E), cyan accent (#00D4FF), Calibri font",
+        "The output path is /deliverables/product-demo-2026/deck.pptx"
+      ]
+    }
+  ]
+}

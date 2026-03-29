@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "skill": "presentation-storyboard",
+  "evals": [
+    {
+      "id": "psb-01-basic-storyboard",
+      "description": "Skill generates a well-structured storyboard for a standard business presentation",
+      "prompt": "Create a storyboard for a 20-minute presentation on our company's 2026 product roadmap. Audience: product managers and engineers. Key messages: we are pivoting to AI, we ship faster than competitors, Q3 is our biggest release.",
+      "assertions": [
+        "The storyboard has approximately 10 slides (20 min ÷ 2 min/slide)",
+        "Each slide has: title, message, objective, duration, visual suggestion, transition note",
+        "All three key messages appear as slide headlines",
+        "The 3-act structure is present: Context, Content, Action sections",
+        "No slide carries more than one concept"
+      ]
+    },
+    {
+      "id": "psb-02-short-presentation",
+      "description": "Skill limits slide count for very short presentations (under 5 min)",
+      "prompt": "Storyboard a 4-minute lightning talk about our new onboarding flow. Audience: internal team.",
+      "assertions": [
+        "The storyboard has at most 4 slides",
+        "The structure is: title / problem / solution / call-to-action",
+        "Each slide has a duration ≤ 1.5 min",
+        "The skill does not pad with unnecessary slides"
+      ]
+    },
+    {
+      "id": "psb-03-visual-suggestion-accuracy",
+      "description": "Skill suggests appropriate visual types that match the data or content",
+      "prompt": "Build a storyboard for a 30-minute data-driven presentation on customer churn analysis. Audience: C-suite.",
+      "assertions": [
+        "Slides with quantitative data suggest charts (bar, line, pie) not text-only",
+        "Slides with process flows suggest diagrams or flowcharts",
+        "Slides with executive recommendations use minimal bullets or a single bold statement",
+        "No visual suggestion contradicts the slide content type"
+      ]
+    },
+    {
+      "id": "psb-04-missing-inputs-prompt",
+      "description": "Skill requests missing required inputs before generating",
+      "prompt": "Create a storyboard about digital transformation.",
+      "assertions": [
+        "The skill detects that audience and duration are missing",
+        "The skill uses vscode_askQuestions or asks clearly for the missing fields",
+        "The skill does NOT generate a storyboard before collecting audience and duration",
+        "The skill does not ask for more than 3-4 items at once"
+      ]
+    },
+    {
+      "id": "psb-05-long-presentation-warning",
+      "description": "Skill warns and suggests splitting when duration exceeds 45 minutes",
+      "prompt": "Create a storyboard for a 60-minute all-hands presentation about company strategy.",
+      "assertions": [
+        "The skill warns that 60 minutes is over the recommended limit",
+        "The skill recommends splitting into two 30-minute modules",
+        "If the user still wants a single deck, the skill proceeds and notes the risk of audience fatigue",
+        "The storyboard, if generated, includes natural breakpoints at the halfway mark"
+      ]
+    }
+  ]
+}
