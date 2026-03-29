@@ -1,0 +1,48 @@
+{
+  "skill_name": "vba-powerpoint",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a PowerPoint presentation at C:\\presentations\\SalesQ4.pptm with some macros I want to refactor in VS Code. How do I extract them?",
+      "expected_output": "The agent provides the complete export workflow: backup the .pptm first, then run export_vba_ppt.py. It mentions that PowerPoint may briefly show a window during COM automation.",
+      "assertions": [
+        "Response mentions creating a backup of SalesQ4.pptm before exporting",
+        "Response references scripts/export_vba_ppt.py",
+        "Response includes a command with the .pptm path as argument",
+        "Response states that PowerPoint must be closed before running the script"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I've refactored the .bas modules from my PowerPoint file. How do I import them back?",
+      "expected_output": "The agent confirms a backup is created automatically, then provides the import command with both the .pptm path and the input directory. It notes the backup is created before any write.",
+      "assertions": [
+        "Response confirms a backup is created automatically before any write",
+        "Response references scripts/import_vba_ppt.py",
+        "Response includes a command with both the .pptm path and the input directory",
+        "Response mentions validating the result by opening the file and running a macro"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I want to import VBA into my .pptm but I haven't backed up the file yet.",
+      "expected_output": "The agent stops the flow and requires a backup before proceeding. It provides the PowerShell backup command and only then proceeds with the import instructions.",
+      "assertions": [
+        "Response does NOT proceed directly to the import command",
+        "Response requires the user to create a backup first",
+        "Response provides the backup command before the import command",
+        "Response only provides import_vba_ppt.py instructions after the backup step is addressed"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Does this skill work for PowerPoint template files (.potm)?",
+      "expected_output": "The agent confirms .potm files are supported and applies the same workflow.",
+      "assertions": [
+        "Response confirms .potm templates are supported",
+        "Response applies the same backup → export → refactor → import → validate workflow",
+        "Response mentions substituting the .potm file path in the script commands"
+      ]
+    }
+  ]
+}

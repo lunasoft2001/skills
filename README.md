@@ -15,7 +15,11 @@ skills/
 ├── bowling-proshop/
 ├── m365-email-manager-skill/
 ├── mcp-evaluator/
+├── office-vba-orchestrator/    ← NEW: routes Office VBA tasks; enforces backup policy
 ├── responsible-ai-skill-evaluator/
+├── vba-access/                 ← NEW: VBA modules for Access .accdb
+├── vba-powerpoint/             ← NEW: VBA modules for PowerPoint .pptm
+├── vba-word/                   ← NEW: VBA modules for Word .docm
 ├── vbaExcel/
 └── whatsapp-mcp/
 ```
@@ -124,6 +128,79 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/responsible-ai-skill-evaluator-IT.md`
 
 ## How New Skills Are Documented
+
+---
+
+## Office VBA Suite
+
+A coordinated suite of four skills for extracting, refactoring, and re-importing VBA code across Office applications. All skills share a mandatory **backup-before-import** safety rule.
+
+### office-vba-orchestrator *(new)*
+- Purpose: Route Office VBA tasks to the correct per-application skill and enforce the backup policy for the entire suite. Excludes Outlook.
+- What it includes: Routing table, file type detection logic, universal backup policy with rollback procedures.
+- Typical use cases: Identifying which skill to use for an Office file, enforcing backup before any import, handling multi-application sessions.
+- Main files:
+  - `office-vba-orchestrator/SKILL.md`
+  - `office-vba-orchestrator/references/routing-guide.md`
+  - `office-vba-orchestrator/references/backup-policy.md`
+- Language docs:
+  - `translations/office-vba-orchestrator-EN.md`
+  - `translations/office-vba-orchestrator-ES.md`
+  - `translations/office-vba-orchestrator-PT.md`
+  - `translations/office-vba-orchestrator-DE.md`
+  - `translations/office-vba-orchestrator-FR.md`
+  - `translations/office-vba-orchestrator-IT.md`
+
+### vba-word *(new)*
+- Purpose: Extract, refactor, and re-import VBA code from Word macro-enabled documents (`.docm` / `.dotm`) on Windows.
+- What it includes: Python export/import scripts via COM, VBA component reference, Word event patterns.
+- Typical use cases: Exporting Word VBA modules to `.bas` files, editing macros in VS Code, importing refactored code back safely.
+- Main files:
+  - `vba-word/SKILL.md`
+  - `vba-word/scripts/export_vba_word.py`
+  - `vba-word/scripts/import_vba_word.py`
+  - `vba-word/references/word-vba-patterns.md`
+- Language docs:
+  - `translations/vba-word-EN.md`
+  - `translations/vba-word-ES.md`
+  - `translations/vba-word-PT.md`
+  - `translations/vba-word-DE.md`
+  - `translations/vba-word-FR.md`
+  - `translations/vba-word-IT.md`
+
+### vba-powerpoint *(new)*
+- Purpose: Extract, refactor, and re-import VBA code from PowerPoint macro-enabled presentations (`.pptm` / `.potm`) on Windows.
+- What it includes: Python export/import scripts via COM, VBA component reference, PowerPoint event patterns.
+- Typical use cases: Exporting PowerPoint VBA modules to `.bas` files, editing presentation macros in VS Code, importing refactored code back safely.
+- Main files:
+  - `vba-powerpoint/SKILL.md`
+  - `vba-powerpoint/scripts/export_vba_ppt.py`
+  - `vba-powerpoint/scripts/import_vba_ppt.py`
+  - `vba-powerpoint/references/ppt-vba-patterns.md`
+- Language docs:
+  - `translations/vba-powerpoint-EN.md`
+  - `translations/vba-powerpoint-ES.md`
+  - `translations/vba-powerpoint-PT.md`
+  - `translations/vba-powerpoint-DE.md`
+  - `translations/vba-powerpoint-FR.md`
+  - `translations/vba-powerpoint-IT.md`
+
+### vba-access *(new)*
+- Purpose: Extract, refactor, and re-import VBA modules (standard and class modules) from Access databases (`.accdb` / `.mdb`) on Windows. For full database analysis, use `access-analyzer`.
+- What it includes: Python export/import scripts via COM, DAO/ADO patterns, Access VBA component reference.
+- Typical use cases: Exporting Access VBA modules to `.bas` files, editing modules in VS Code, importing refactored code back safely.
+- Main files:
+  - `vba-access/SKILL.md`
+  - `vba-access/scripts/export_vba_access.py`
+  - `vba-access/scripts/import_vba_access.py`
+  - `vba-access/references/access-vba-patterns.md`
+- Language docs:
+  - `translations/vba-access-EN.md`
+  - `translations/vba-access-ES.md`
+  - `translations/vba-access-PT.md`
+  - `translations/vba-access-DE.md`
+  - `translations/vba-access-FR.md`
+  - `translations/vba-access-IT.md`
 
 For every new skill added to this repository, this README will include:
 - A short English description of the skill.
