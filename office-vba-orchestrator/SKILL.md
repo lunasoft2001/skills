@@ -42,16 +42,16 @@ This policy applies to ALL skills in the Office VBA suite.
 - Enable VBOM: `scripts/enable_vba_access.reg`
 
 ### vba-word — Word `.docm`
-- Export: `python export_vba_word.py MyDoc.docm ./exported_vba/`
-- Import: `python import_vba_word.py MyDoc.docm ./exported_vba/` *(backup automatic)*
+- Export: `python scripts/export_vba_word.py MyDoc.docm ./exported_vba/`
+- Import: `python scripts/import_vba_word.py MyDoc.docm ./exported_vba/` *(backup automatic)*
 
 ### vba-powerpoint — PowerPoint `.pptm`
-- Export: `python export_vba_ppt.py Deck.pptm ./exported_vba/`
-- Import: `python import_vba_ppt.py Deck.pptm ./exported_vba/` *(backup automatic)*
+- Export: `python scripts/export_vba_ppt.py Deck.pptm ./exported_vba/`
+- Import: `python scripts/import_vba_ppt.py Deck.pptm ./exported_vba/` *(backup automatic)*
 
 ### vba-access — Access `.accdb` (VBA modules only)
-- Export: `python export_vba_access.py MyApp.accdb ./exported_vba/`
-- Import: `python import_vba_access.py MyApp.accdb ./exported_vba/` *(backup automatic)*
+- Export: `python scripts/export_vba_access.py MyApp.accdb ./exported_vba/`
+- Import: `python scripts/import_vba_access.py MyApp.accdb ./exported_vba/` *(backup automatic)*
 - Full DB analysis: use **access-analyzer** instead
 
 ## Backup Command (Universal)
