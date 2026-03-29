@@ -27,7 +27,7 @@ Route Office VBA tasks to the correct per-application skill (vbaExcel, vba-word,
 
 | File type | Application | Skill |
 |-----------|-------------|-------|
-| `.xlsm`, `.xlam` | Excel | `vbaExcel` |
+| `.xlsm`, `.xlam`, `.xltm` | Excel | `vbaExcel` |
 | `.docm`, `.dotm` | Word | `vba-word` |
 | `.pptm`, `.potm` | PowerPoint | `vba-powerpoint` |
 | `.accdb`, `.mdb` | Access | `vba-access` |
