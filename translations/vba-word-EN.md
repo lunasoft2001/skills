@@ -16,7 +16,9 @@ vba-word/
 
 ## Purpose
 
-Extract all VBA modules from Word macro-enabled documents (`.docm` / `.dotm`), refactor them in VS Code, and safely re-import  always creating a timestamped backup before any import.them 
+Extract all VBA modules from Word macro-enabled documents (`.docm` / `.dotm`),
+refactor them in VS Code, and safely re-import them — always creating a
+timestamped backup before any import.
 
 ## Installation
 
@@ -34,4 +36,4 @@ Then restart VS Code.
 - Enable "Trust access to the VBA project object model" in Word Trust Center.
 - Always close Word before running export or import scripts.
 - A backup of the `.docm` is created automatically before any import.
-- Part of the **Office VBA  use `office-vba-orchestrator` to route between skills.Suite** 
+- Part of the **Office VBA Suite** — use `office-vba-orchestrator` to route between skills.

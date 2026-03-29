@@ -10,15 +10,17 @@ vba-word/
   references/
     word-vba-patterns.md          # Tipos de componentes VBA, eventos y patrones comunes
   scripts/
-    export_vba_word.py            # Exporta mdddulos VBA a archivos .bas/.cls
+    export_vba_word.py            # Exporta módulos VBA a archivos .bas/.cls
     import_vba_word.py            # Reimporta archivos .bas/.cls al .docm
 ```
 
-## Propsssito
+## Propósito
 
-Extraer todos los mdddulos VBA de documentos Word con macros (`.docm` / `.dotm`), refactorizarlos en VS Code y reimportarlos de forma  creando siempre una copia de seguridad con marca de tiempo antes de cualquier importaciSegurannn. 
+Extraer todos los módulos VBA de documentos Word con macros (`.docm` / `.dotm`),
+refactorizarlos en VS Code y reimportarlos de forma segura — creando siempre una
+copia de seguridad con marca de tiempo antes de cualquier importación.
 
-## Instalacinnn
+## Instalación
 
 Copia esta carpeta al directorio de skills de Copilot:
 
@@ -32,6 +34,6 @@ Luego reinicia VS Code.
 
 - Requiere Windows + Microsoft Word instalado.
 - Habilita "Confiar en el acceso al modelo de objetos del proyecto VBA" en el Centro de confianza de Word.
-- Cierra siempre Word antes de ejecutar los scripts de exportacinnn o importacinnn.
-- Se crea un backup del `.docm` automticamente antes de cualquier importacinnn.
-- Parte de la **Suite VBA de  usa `office-vba-orchestrator` para enrutar entre skills.Office** 
+- Cierra siempre Word antes de ejecutar los scripts de exportación o importación.
+- Se crea un backup del `.docm` automáticamente antes de cualquier importación.
+- Parte de la **Suite VBA de Office** — usa `office-vba-orchestrator` para enrutar entre skills.
