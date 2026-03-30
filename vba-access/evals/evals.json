@@ -1,0 +1,48 @@
+{
+  "skill_name": "vba-access",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have an Access database at C:\\data\\Inventory.accdb and I want to export all VBA modules so I can clean up the code in VS Code.",
+      "expected_output": "The agent provides the export workflow: check for .laccdb lock file, backup the .accdb, then run export_vba_access.py. It clarifies that only standard and class modules are exported.",
+      "assertions": [
+        "Response mentions closing Access and checking for .laccdb lock file",
+        "Response mentions backing up Inventory.accdb before exporting",
+        "Response references scripts/export_vba_access.py",
+        "Response clarifies that only standard and class modules are exported (not form/report code)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I've refactored the VBA modules from my Access database. How do I import them back?",
+      "expected_output": "The agent confirms a backup is created automatically, then provides the import command. It warns that Access must be closed and no .laccdb lock file should exist.",
+      "assertions": [
+        "Response confirms a backup is created automatically before import",
+        "Response references scripts/import_vba_access.py",
+        "Response includes a command with both the .accdb path and the input directory",
+        "Response mentions that Access must be closed and no .laccdb lock file should exist"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I tried to import VBA into my Access database but Access is currently open by another user.",
+      "expected_output": "The agent stops the import and explains that the .laccdb lock file prevents the operation. It instructs the user to ensure all Access instances are closed before proceeding.",
+      "assertions": [
+        "Response does NOT proceed with the import while Access is open",
+        "Response explains the .laccdb lock file detection mechanism",
+        "Response instructs the user to close all Access instances before retrying",
+        "Response does not suggest bypassing the lock check"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I want to refactor the forms and reports code in my Access database, not just the modules.",
+      "expected_output": "The agent clarifies that vba-access handles only standard and class modules, and recommends the access-analyzer skill for full database analysis including forms and reports.",
+      "assertions": [
+        "Response clearly states that vba-access handles only standard and class modules",
+        "Response recommends the access-analyzer skill for form and report code",
+        "Response does NOT attempt to export form/report code using this skill"
+      ]
+    }
+  ]
+}

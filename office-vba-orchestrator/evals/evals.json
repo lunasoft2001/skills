@@ -1,0 +1,60 @@
+{
+  "skill_name": "office-vba-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to refactor VBA in my Excel file workbook.xlsm.",
+      "expected_output": "The orchestrator identifies the file as Excel (.xlsm) and routes the user to the vbaExcel skill, enforcing the backup policy first.",
+      "assertions": [
+        "Response identifies the file as an Excel macro-enabled workbook",
+        "Response names the vbaExcel skill as the correct skill to use",
+        "Response mentions the backup requirement before any import operation",
+        "Response does NOT attempt to route to vba-word, vba-powerpoint, or vba-access"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Can you help me extract macros from my Word document Report.docm?",
+      "expected_output": "The orchestrator routes to vba-word and enforces the backup policy.",
+      "assertions": [
+        "Response identifies .docm as a Word macro-enabled document",
+        "Response names the vba-word skill",
+        "Response includes the backup requirement before import",
+        "Response does NOT route to vbaExcel, vba-powerpoint, or vba-access"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I have a .otm Outlook template with macros I want to refactor.",
+      "expected_output": "The orchestrator explicitly rejects the Outlook .otm file and informs the user that Outlook VBA is not supported in this suite.",
+      "assertions": [
+        "Response does NOT route to any skill in the suite",
+        "Response explicitly states that Outlook VBA is not supported",
+        "Response does not attempt to process the .otm file",
+        "Response clearly informs the user of the exclusion"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I need to work on VBA in both my Excel spreadsheet budget.xlsm and my Word document contract.docm today.",
+      "expected_output": "The orchestrator handles the mixed file type scenario: backup both files first, then process each independently using the correct skill (vbaExcel for .xlsm, vba-word for .docm).",
+      "assertions": [
+        "Response identifies both file types correctly (Excel and Word)",
+        "Response names both vbaExcel and vba-word",
+        "Response instructs backing up BOTH files before starting any imports",
+        "Response processes each skill independently and sequentially"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I want to import VBA into my Access database but I haven't made a backup yet.",
+      "expected_output": "The orchestrator enforces the backup policy: stops the flow and requires a backup before routing to vba-access.",
+      "assertions": [
+        "Response does NOT proceed to import instructions without a backup",
+        "Response enforces the backup policy before routing to vba-access",
+        "Response provides the backup command for .accdb files",
+        "Response only proceeds with vba-access routing after the backup requirement is addressed"
+      ]
+    }
+  ]
+}

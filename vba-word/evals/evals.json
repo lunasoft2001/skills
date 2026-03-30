@@ -1,0 +1,48 @@
+{
+  "skill_name": "vba-word",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a Word document at C:\\projects\\Invoice.docm and I want to extract all its VBA modules so I can refactor them in VS Code.",
+      "expected_output": "The agent provides the complete export workflow: backup the .docm first, then run export_vba_word.py with the file path and output directory. It names the script correctly and shows the command syntax.",
+      "assertions": [
+        "Response mentions creating a backup of Invoice.docm before exporting",
+        "Response references scripts/export_vba_word.py",
+        "Response includes a command with the .docm path as argument",
+        "Response states that Word must be closed before running the script"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I've finished refactoring the .bas files from my Word document. Now I want to import them back into Invoice.docm.",
+      "expected_output": "The agent provides the import workflow emphasizing the mandatory backup step, then the import_vba_word.py command. It warns that import overwrites existing modules.",
+      "assertions": [
+        "Response warns that import overwrites existing modules and cannot be undone",
+        "Response confirms a backup will be created automatically (or instructs user to create one first)",
+        "Response references scripts/import_vba_word.py",
+        "Response includes a command with both the .docm path and the input directory as arguments"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I want to import VBA into my .docm but I forgot to make a backup. What should I do?",
+      "expected_output": "The agent stops the import flow and instructs the user to create a backup first before proceeding. It provides the backup command and only then allows the import to continue.",
+      "assertions": [
+        "Response does NOT instruct the user to proceed with import immediately",
+        "Response instructs the user to create a backup first",
+        "Response provides the backup command (Copy-Item or equivalent)",
+        "Response only mentions running import_vba_word.py after the backup step"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "My Word .dotm template has macros I need to edit. Can I use this skill for templates too?",
+      "expected_output": "The agent confirms the skill supports .dotm templates and provides the same workflow (backup → export → refactor → import → validate).",
+      "assertions": [
+        "Response confirms .dotm templates are supported",
+        "Response applies the same export/import workflow",
+        "Response mentions substituting the .dotm file path in the script commands"
+      ]
+    }
+  ]
+}
