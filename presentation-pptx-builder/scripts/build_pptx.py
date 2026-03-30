@@ -19,9 +19,10 @@ from pathlib import Path
 
 try:
     from pptx import Presentation
-    from pptx.util import Inches, Pt, Emu
+    from pptx.util import Inches, Pt
     from pptx.dml.color import RGBColor
     from pptx.enum.text import PP_ALIGN
+    from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
 except ImportError:
     print("ERROR: python-pptx is not installed.")
     print("Install it with:  pip install python-pptx")
@@ -91,7 +92,7 @@ def add_text_box(slide, text, left, top, width, height, font_name, font_size, bo
 
 def add_placeholder_rect(slide, label, left, top, width, height, theme):
     shape = slide.shapes.add_shape(
-        1,  # MSO_SHAPE_TYPE.RECTANGLE
+        MSO_AUTO_SHAPE_TYPE.RECTANGLE,
         left, top, width, height
     )
     shape.fill.solid()
@@ -133,7 +134,7 @@ def build_title_slide(prs, slide_data, theme, project_title):
         ph.element.getparent().remove(ph.element)
 
     # Accent bar (left side)
-    slide.shapes.add_shape(1,
+    slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE,
         Inches(0), Inches(0), Inches(0.25), SLIDE_H
     ).fill.solid()
     slide.shapes[-1].fill.fore_color.rgb = theme["accent"]
@@ -161,7 +162,7 @@ def build_content_slide(prs, slide_data, number, theme):
     set_bg(slide, theme["bg"])
 
     # Accent bar (top)
-    bar = slide.shapes.add_shape(1,
+    bar = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE,
         Inches(0), Inches(0), SLIDE_W, Inches(0.07))
     bar.fill.solid()
     bar.fill.fore_color.rgb = theme["accent"]

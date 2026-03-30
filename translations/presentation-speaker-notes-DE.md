@@ -15,7 +15,7 @@ Erstellt ein detailliertes Moderatorskript für jede Folie: Gesprächspunkte, Ti
 - Timing + kumulierte verstrichene Zeit
 - Vorwärts-Hinweis (Klick / Pause / Einblenden)
 - Skript in natürlicher Sprache (2–4 Sätze)
-- Schlüsselbetонungsphrase
+- Schlüsselbetonungsphrase
 - Übergang zur nächsten Folie
 
 ## Q&A-Bereich

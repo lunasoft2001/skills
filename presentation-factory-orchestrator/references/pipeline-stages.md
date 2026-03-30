@@ -128,7 +128,7 @@ def sanitize_slug(raw: str) -> str:
 Examples:
 - `"Q2 Roadmap 2026"` → `"q2-roadmap-2026"`
 - `"Annual Report (Draft)"` → `"annual-report-draft"`
-- `"AI & ML Strategy"` → `"ai--ml-strategy"` → `"ai-ml-strategy"`
+- `"AI & ML Strategy"` → `"ai-ml-strategy"`
 
 ---
 
