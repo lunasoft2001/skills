@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "skill": "presentation-bundle-manager",
+  "evals": [
+    {
+      "id": "pbm-01-full-bundle-complete",
+      "description": "Skill bundles a complete deliverables folder with all core files present",
+      "prompt": "Bundle the presentation for slug: q2-review-2026. All four files are ready in /deliverables/q2-review-2026/.",
+      "assertions": [
+        "The skill runs bundle_manager.py with the correct --slug and --path arguments",
+        "index.xlsx is created with a Summary sheet and a Files sheet",
+        "manifest.json is created with schema_version, project metadata, and a deliverables array",
+        "manifest.json has all_core_files_present: true and an empty warnings array",
+        "The skill reports the final bundle contents to the user"
+      ]
+    },
+    {
+      "id": "pbm-02-missing-file-partial-bundle",
+      "description": "Skill creates a partial bundle with warnings when a core file is missing",
+      "prompt": "Bundle slug: annual-review-2026 — but the speaker-notes.docx wasn't generated yet.",
+      "assertions": [
+        "The skill still creates index.xlsx and manifest.json without blocking",
+        "manifest.json has all_core_files_present: false",
+        "manifest.json has a warnings entry for the missing speaker-notes.docx",
+        "The Files sheet in index.xlsx shows speaker-notes.docx with status 'missing'",
+        "The skill offers to trigger presentation-speaker-notes to fill the gap"
+      ]
+    },
+    {
+      "id": "pbm-03-sha256-checksums",
+      "description": "Skill includes SHA256 hashes for all present files in the manifest",
+      "prompt": "Generate the manifest for slug: product-launch-2026 with checksums.",
+      "assertions": [
+        "Each present file entry in manifest.json includes a sha256 field",
+        "The sha256 values are non-empty strings (64 hex characters)",
+        "Missing files do not have sha256 fields",
+        "The manifest is valid JSON"
+      ]
+    },
+    {
+      "id": "pbm-04-missing-dependency-check",
+      "description": "Skill surfaces missing openpyxl dependency with install instruction",
+      "prompt": "Create the bundle for slug: strategy-2026.",
+      "assertions": [
+        "If openpyxl is not installed, the skill provides: pip install openpyxl",
+        "The manifest.json is still created even if index.xlsx fails",
+        "The skill does not silently skip the xlsx step"
+      ]
+    },
+    {
+      "id": "pbm-05-index-xlsx-structure",
+      "description": "Skill produces an index.xlsx with exactly two sheets: Summary and Files",
+      "prompt": "Create the project index for slug: demo-day-2026, author: Jane Smith, title: Demo Day 2026 Presentation.",
+      "assertions": [
+        "index.xlsx has a 'Summary' sheet with Project, Slug, Author, Generated, Total files, Total size (KB) rows",
+        "index.xlsx has a 'Files' sheet with columns: File, Type, Size (KB), Created, Status, Notes",
+        "The Author field shows 'Jane Smith'",
+        "The Generated field is a valid ISO timestamp",
+        "All present files appear in the Files sheet with status ✅ Present"
+      ]
+    }
+  ]
+}

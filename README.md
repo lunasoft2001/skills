@@ -16,6 +16,11 @@ skills/
 ├── m365-email-manager-skill/
 ├── mcp-evaluator/
 ├── office-vba-orchestrator/    ← NEW: routes Office VBA tasks; enforces backup policy
+├── presentation-bundle-manager/
+├── presentation-factory-orchestrator/
+├── presentation-pptx-builder/
+├── presentation-speaker-notes/
+├── presentation-storyboard/
 ├── responsible-ai-skill-evaluator/
 ├── vba-access/                 ← NEW: VBA modules for Access .accdb
 ├── vba-powerpoint/             ← NEW: VBA modules for PowerPoint .pptm
@@ -111,6 +116,12 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/mcp-evaluator-FR.md`
   - `translations/mcp-evaluator-IT.md`
 
+---
+
+## Presentation Suite
+
+A set of five coordinated skills for creating complete professional presentations end-to-end.
+
 ### responsible-ai-skill-evaluator
 - Purpose: Evaluate whether a skill (SKILL.md) complies with Microsoft's 6 Responsible AI principles and AgentSkills.io format and quality standards.
 - What it includes: Evaluation workflow, Microsoft RAI checklist, and AgentSkills.io quality checklist as reference files.
@@ -126,6 +137,106 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/responsible-ai-skill-evaluator-DE.md`
   - `translations/responsible-ai-skill-evaluator-FR.md`
   - `translations/responsible-ai-skill-evaluator-IT.md`
+
+### presentation-factory-orchestrator
+- Purpose: End-to-end orchestrator for creating professional presentations. Routes the full pipeline across four stages — storyboard → pptx-builder → speaker-notes → bundle-manager — and validates minimum inputs before starting.
+- What it includes: Pipeline stage contracts, slug sanitization logic, progress reporting format, and stage failure recovery.
+- Typical use cases: Creating a complete presentation package from scratch, routing partial pipelines to individual sub-skills, tracking progress across all four stages.
+- Main files:
+  - `presentation-factory-orchestrator/SKILL.md`
+  - `presentation-factory-orchestrator/references/pipeline-stages.md`
+  - `presentation-factory-orchestrator/evals/evals.json`
+- Language docs:
+  - `translations/presentation-factory-orchestrator-EN.md`
+  - `translations/presentation-factory-orchestrator-ES.md`
+  - `translations/presentation-factory-orchestrator-PT.md`
+  - `translations/presentation-factory-orchestrator-DE.md`
+  - `translations/presentation-factory-orchestrator-FR.md`
+  - `translations/presentation-factory-orchestrator-IT.md`
+
+### presentation-storyboard
+- Purpose: Structure the narrative arc of a presentation slide by slide, producing message, objective, duration, and visual suggestion per slide.
+- What it includes: 3-act narrative framework, slide budget calculator, visual suggestion catalog, transition phrase patterns, and four narrative models (business, pitch, educational, executive summary).
+- Typical use cases: Planning a presentation before building the deck, defining the story arc and key messages, generating a storyboard document for stakeholder review.
+- Main files:
+  - `presentation-storyboard/SKILL.md`
+  - `presentation-storyboard/references/slide-structure-guide.md`
+  - `presentation-storyboard/evals/evals.json`
+- Language docs:
+  - `translations/presentation-storyboard-EN.md`
+  - `translations/presentation-storyboard-ES.md`
+  - `translations/presentation-storyboard-PT.md`
+  - `translations/presentation-storyboard-DE.md`
+  - `translations/presentation-storyboard-FR.md`
+  - `translations/presentation-storyboard-IT.md`
+
+### presentation-pptx-builder
+- Purpose: Generate a `.pptx` presentation file consistent with a storyboard, using python-pptx with four visual themes and labeled placeholders for charts.
+- What it includes: Python builder script, four themes (corporate, minimal, dark, vibrant), storyboard JSON contract, visual placeholder logic, and layout reference.
+- Typical use cases: Converting a storyboard into an actual PowerPoint file, applying consistent branding across all slides, generating a deck programmatically.
+- Main files:
+  - `presentation-pptx-builder/SKILL.md`
+  - `presentation-pptx-builder/scripts/build_pptx.py`
+  - `presentation-pptx-builder/references/pptx-design-guide.md`
+  - `presentation-pptx-builder/evals/evals.json`
+- Language docs:
+  - `translations/presentation-pptx-builder-EN.md`
+  - `translations/presentation-pptx-builder-ES.md`
+  - `translations/presentation-pptx-builder-PT.md`
+  - `translations/presentation-pptx-builder-DE.md`
+  - `translations/presentation-pptx-builder-FR.md`
+  - `translations/presentation-pptx-builder-IT.md`
+
+### presentation-speaker-notes
+- Purpose: Generate a per-slide speaker script with timing cues, transition phrases, and a Q&A section with probable audience questions and suggested answers.
+- What it includes: Three speaking styles (conversational, formal, storytelling), timing enforcement, diplomatic Q&A framing, pre-presentation checklist, and closing statement template.
+- Typical use cases: Preparing a presenter guide for a conference talk, writing rehearsal notes with timing, generating Q&A preparation for a board presentation.
+- Main files:
+  - `presentation-speaker-notes/SKILL.md`
+  - `presentation-speaker-notes/references/notes-format-guide.md`
+  - `presentation-speaker-notes/evals/evals.json`
+- Language docs:
+  - `translations/presentation-speaker-notes-EN.md`
+  - `translations/presentation-speaker-notes-ES.md`
+  - `translations/presentation-speaker-notes-PT.md`
+  - `translations/presentation-speaker-notes-DE.md`
+  - `translations/presentation-speaker-notes-FR.md`
+  - `translations/presentation-speaker-notes-IT.md`
+
+### presentation-bundle-manager
+- Purpose: Package all presentation deliverables into a `/deliverables/<slug>/` folder, generate an `index.xlsx` inventory and a `manifest.json` with SHA256 checksums and validation status.
+- What it includes: Python bundle script, two-sheet Excel index (Summary + Files), JSON manifest schema, SHA256 checksum generation, and partial bundle handling.
+- Typical use cases: Finalizing a presentation project and archiving all files, generating a delivery checklist, creating a manifest for stakeholder handoff.
+- Main files:
+  - `presentation-bundle-manager/SKILL.md`
+  - `presentation-bundle-manager/scripts/bundle_manager.py`
+  - `presentation-bundle-manager/evals/evals.json`
+- Language docs:
+  - `translations/presentation-bundle-manager-EN.md`
+  - `translations/presentation-bundle-manager-ES.md`
+  - `translations/presentation-bundle-manager-PT.md`
+  - `translations/presentation-bundle-manager-DE.md`
+  - `translations/presentation-bundle-manager-FR.md`
+  - `translations/presentation-bundle-manager-IT.md`
+
+---
+
+## Presentation Suite — Standard Output Structure
+
+All five presentation skills share a common output folder convention:
+
+```
+/deliverables/<slug>/
+  storyboard.docx       ← presentation-storyboard
+  deck.pptx             ← presentation-pptx-builder
+  speaker-notes.docx    ← presentation-speaker-notes
+  index.xlsx            ← presentation-bundle-manager
+  manifest.json         ← presentation-bundle-manager
+```
+
+The `presentation-factory-orchestrator` skill coordinates all four sub-skills end-to-end and delivers the complete bundle in one command.
+
+---
 
 ## How New Skills Are Documented
 

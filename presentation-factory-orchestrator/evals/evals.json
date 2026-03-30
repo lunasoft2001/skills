@@ -1,0 +1,68 @@
+{
+  "version": "1.0",
+  "skill": "presentation-factory-orchestrator",
+  "evals": [
+    {
+      "id": "pfo-01-full-pipeline-trigger",
+      "description": "Skill triggers and validates inputs when the user asks for a full presentation",
+      "prompt": "I need to create a 20-minute investor presentation about our Series A fundraise for a VC audience.",
+      "assertions": [
+        "The skill collects or confirms all four required inputs: topic, audience, duration, slug",
+        "The skill does NOT start generating slides before all required inputs are confirmed",
+        "The slug is auto-generated or requested if not provided",
+        "The skill outlines the four pipeline stages before starting"
+      ]
+    },
+    {
+      "id": "pfo-02-missing-slug-validation",
+      "description": "Skill prompts for missing required input (slug) before starting",
+      "prompt": "Make a 15-minute deck on our Q3 results for the leadership team.",
+      "assertions": [
+        "The skill detects that the slug is missing and requests it from the user",
+        "The skill does not proceed to Stage 1 until the slug is provided",
+        "The skill explains what the slug is used for (output folder)"
+      ]
+    },
+    {
+      "id": "pfo-03-partial-run-storyboard-only",
+      "description": "Skill routes to a single sub-skill when user only wants one stage",
+      "prompt": "Just create the storyboard for now — topic: AI product strategy, audience: product managers, 30 minutes, slug: ai-strategy-pm.",
+      "assertions": [
+        "The skill routes directly to presentation-storyboard without running the full pipeline",
+        "The skill does NOT generate a PPTX or speaker notes unprompted",
+        "The skill confirms the storyboard output path: /deliverables/ai-strategy-pm/storyboard.docx"
+      ]
+    },
+    {
+      "id": "pfo-04-slug-sanitization",
+      "description": "Skill auto-sanitizes a slug with spaces or uppercase to lowercase-hyphenated format",
+      "prompt": "Create a full presentation. Topic: Annual Business Review, audience: board of directors, 45 minutes, slug: Annual Business Review 2026.",
+      "assertions": [
+        "The skill converts 'Annual Business Review 2026' to 'annual-business-review-2026'",
+        "The skill confirms the sanitized slug with the user before proceeding",
+        "The output path uses the sanitized slug"
+      ]
+    },
+    {
+      "id": "pfo-05-progress-reporting",
+      "description": "Skill reports progress after each completed stage",
+      "prompt": "Full pipeline: topic: Product Launch Plan, audience: sales team, 25 min, slug: product-launch-plan.",
+      "assertions": [
+        "After Stage 1 completes, the skill confirms storyboard.docx was created and its slide count",
+        "After Stage 2 completes, the skill confirms deck.pptx was created",
+        "After Stage 4 completes, the skill outputs a summary table with all five files and their status",
+        "The summary table matches the format defined in the SKILL.md (✅ Created rows)"
+      ]
+    },
+    {
+      "id": "pfo-06-stage-failure-recovery",
+      "description": "Skill handles a stage failure gracefully and offers retry",
+      "prompt": "Continue building the deck — the storyboard is already at /deliverables/q2-report/storyboard.docx but the PPTX failed.",
+      "assertions": [
+        "The skill does not restart from Stage 1 — it resumes from Stage 2 (pptx-builder)",
+        "The skill surfaces the error reason to the user before retrying",
+        "The skill confirms the new deck.pptx path after successful retry"
+      ]
+    }
+  ]
+}

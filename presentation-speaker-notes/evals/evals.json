@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "skill": "presentation-speaker-notes",
+  "evals": [
+    {
+      "id": "psn-01-full-notes-generation",
+      "description": "Skill generates complete per-slide speaker notes from a storyboard",
+      "prompt": "Write speaker notes for a 20-minute product roadmap presentation. Storyboard has 10 slides. Style: conversational. Slug: product-roadmap-2026.",
+      "assertions": [
+        "Every slide in the storyboard has a corresponding notes section",
+        "Each section includes: timing, cue, script (2-4 sentences), key emphasis, transition phrase",
+        "Total script time is approximately 20 minutes (±10%)",
+        "The script is written as natural speech, not bullet points",
+        "The transition phrases connect logically to the next slide topic"
+      ]
+    },
+    {
+      "id": "psn-02-qa-section-generation",
+      "description": "Skill generates a realistic Q&A section with probable questions and answers",
+      "prompt": "Add a Q&A section for a board presentation on Series A fundraising. Audience: VCs and board members.",
+      "assertions": [
+        "The Q&A has 5-8 probable questions",
+        "Each question has a 2-4 sentence suggested answer",
+        "Questions about valuation, runway, and competitors are included",
+        "Sensitive questions (budget, headcount, risks) are flagged with ⚠️",
+        "Each question has a deflection phrase for out-of-scope answers"
+      ]
+    },
+    {
+      "id": "psn-03-timing-warning",
+      "description": "Skill warns when a slide script exceeds its allocated duration",
+      "prompt": "Write speaker notes for this slide: 'Our competitive landscape analysis' — allocated 2 minutes, but the content is very dense with 6 competitors to cover.",
+      "assertions": [
+        "The skill warns with ⏱️ that 6 competitors at 2 minutes is tight",
+        "The skill suggests trimming to 3-4 competitors or requesting more time",
+        "The generated script respects the 2-minute limit if the user confirms it",
+        "Word count is approximately 240 words (120 wpm × 2 min)"
+      ]
+    },
+    {
+      "id": "psn-04-style-adaptation",
+      "description": "Skill adapts script tone to the requested style",
+      "prompt": "Write speaker notes in formal style for a regulatory compliance presentation. Audience: government auditors.",
+      "assertions": [
+        "The script uses formal register: no contractions, no colloquial phrases",
+        "Word pace estimate is ~100 wpm (formal pace)",
+        "Opening sentence is professional and direct",
+        "Transition phrases are formal (e.g., 'I will now turn to...' not 'So next up...')"
+      ]
+    },
+    {
+      "id": "psn-05-pre-presentation-checklist",
+      "description": "Skill includes a pre-presentation checklist in the output document",
+      "prompt": "Generate speaker notes for a conference keynote. Topic: future of remote work. 45 minutes.",
+      "assertions": [
+        "The output document includes a pre-presentation checklist",
+        "The checklist includes at minimum: display test, clicker check, water, opening sentence memorized",
+        "The closing statement section is present",
+        "The total runtime header matches the storyboard duration (45 min)"
+      ]
+    }
+  ]
+}
