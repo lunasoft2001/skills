@@ -36,7 +36,7 @@ python3 scripts/build_pptx.py \
 ## Estructura
 
 ```
-presentation-pptx-builder/
+suites/presentation/presentation-pptx-builder/
   SKILL.md
   scripts/
     build_pptx.py

@@ -32,7 +32,7 @@ Convert a storyboard into a `.pptx` file using `scripts/build_pptx.py`. Each sli
 3. **Run the builder script**:
 
 ```bash
-python3 presentation-pptx-builder/scripts/build_pptx.py \
+python3 suites/presentation/presentation-pptx-builder/scripts/build_pptx.py \
   --storyboard /deliverables/<slug>/storyboard.json \
   --output /deliverables/<slug>/deck.pptx \
   --theme corporate

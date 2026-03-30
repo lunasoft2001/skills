@@ -35,7 +35,7 @@ Generates a detailed speaker script for each slide: per-slide talking points, ti
 ## Structure
 
 ```
-presentation-speaker-notes/
+suites/presentation/presentation-speaker-notes/
   SKILL.md
   evals/
     evals.json

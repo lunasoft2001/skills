@@ -5,7 +5,7 @@ Este documento describe el contenido del skill `vba-word` en este repositorio.
 ## Estructura
 
 ```text
-vba-word/
+suites/office-vba/vba-word/
   SKILL.md                        # Metadata del skill (vba-word)
   references/
     word-vba-patterns.md          # Tipos de componentes VBA, eventos y patrones comunes

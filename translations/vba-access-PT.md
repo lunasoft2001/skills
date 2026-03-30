@@ -5,7 +5,7 @@ Este documento descreve o conteúdo da habilidade `vba-access` neste repositóri
 ## Estrutura
 
 ```text
-vba-access/
+suites/office-vba/vba-access/
   SKILL.md                        # Metadados da habilidade (vba-access)
   references/
     access-vba-patterns.md        # Tipos de componentes VBA, padrões DAO/ADO e solução de problemas

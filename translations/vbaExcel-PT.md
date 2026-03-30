@@ -5,7 +5,7 @@ Este documento descreve o conteudo do skill `vbaExcel` neste repositorio.
 ## Estrutura
 
 ```text
-vbaExcel/
+suites/office-vba/vbaExcel/
   SKILL.md                        # Metadados do skill (vbaExcel)
   INSTALL.txt                     # Notas rapidas de instalacao e uso
   scripts/                        # Scripts de suporte PowerShell/Python

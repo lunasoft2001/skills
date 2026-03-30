@@ -5,7 +5,7 @@ Este documento descreve o conteúdo da habilidade `vba-powerpoint` neste reposit
 ## Estrutura
 
 ```text
-vba-powerpoint/
+suites/office-vba/vba-powerpoint/
   SKILL.md                        # Metadados da habilidade (vba-powerpoint)
   references/
     ppt-vba-patterns.md           # Tipos de componentes VBA, eventos e padrões

@@ -5,7 +5,7 @@ Questo documento descrive il contenuto della competenza `vba-word` in questo rep
 ## Struttura
 
 ```text
-vba-word/
+suites/office-vba/vba-word/
   SKILL.md                        # Metadati della competenza (vba-word)
   references/
     word-vba-patterns.md          # Tipi di componenti VBA, eventi e pattern comuni

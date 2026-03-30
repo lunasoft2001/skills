@@ -5,7 +5,7 @@ Dieses Dokument beschreibt den Inhalt des Skills `vba-powerpoint` in diesem Repo
 ## Struktur
 
 ```text
-vba-powerpoint/
+suites/office-vba/vba-powerpoint/
   SKILL.md                        # Skill-Metadaten (vba-powerpoint)
   references/
     ppt-vba-patterns.md           # VBA-Komponententypen, Ereignisse und Muster

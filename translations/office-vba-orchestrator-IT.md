@@ -5,7 +5,7 @@ Questo documento descrive il contenuto della competenza `office-vba-orchestrator
 ## Struttura
 
 ```text
-office-vba-orchestrator/
+suites/office-vba/office-vba-orchestrator/
   SKILL.md                        # Metadati della competenza (office-vba-orchestrator)
   references/
     routing-guide.md              # Rilevamento del tipo di file e logica di instradamento

@@ -5,7 +5,7 @@ Questo documento descrive il contenuto della competenza `vba-access` in questo r
 ## Struttura
 
 ```text
-vba-access/
+suites/office-vba/vba-access/
   SKILL.md                        # Metadati della competenza (vba-access)
   references/
     access-vba-patterns.md        # Tipi di componenti VBA, pattern DAO/ADO e risoluzione problemi
