@@ -5,7 +5,7 @@ Ce document décrit le contenu de la compétence `vba-access` dans ce dépôt.
 ## Structure
 
 ```text
-vba-access/
+suites/office-vba/vba-access/
   SKILL.md                        # Métadonnées de la compétence (vba-access)
   references/
     access-vba-patterns.md        # Types de composants VBA, modèles DAO/ADO et dépannage

@@ -38,7 +38,7 @@ Orquestador end-to-end que coordina el pipeline completo de creación de present
 ## Estructura
 
 ```
-presentation-factory-orchestrator/
+suites/presentation/presentation-factory-orchestrator/
   SKILL.md
   evals/
     evals.json

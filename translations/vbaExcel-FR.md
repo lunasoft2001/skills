@@ -5,7 +5,7 @@ Ce document decrit le contenu du skill `vbaExcel` dans ce depot.
 ## Structure
 
 ```text
-vbaExcel/
+suites/office-vba/vbaExcel/
   SKILL.md                        # Metadonnees du skill (vbaExcel)
   INSTALL.txt                     # Notes rapides d'installation et d'utilisation
   scripts/                        # Scripts d'assistance PowerShell/Python

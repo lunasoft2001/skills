@@ -22,7 +22,7 @@ Structures the narrative arc of a presentation slide by slide. For each slide pr
 ## Structure
 
 ```
-presentation-storyboard/
+suites/presentation/presentation-storyboard/
   SKILL.md
   evals/
     evals.json

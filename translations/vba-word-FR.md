@@ -5,7 +5,7 @@ Ce document dcrit le contenu de la comptence `vba-word` dans ce dptttt.
 ## Structure
 
 ```text
-vba-word/
+suites/office-vba/vba-word/
   SKILL.md                        # Mtadonnes de la comptence (vba-word)
   references/
     word-vba-patterns.md          # Types de composants VBA, vnements et modles courants

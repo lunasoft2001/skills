@@ -5,7 +5,7 @@ Este documento descreve o conteúdo da habilidade `office-vba-orchestrator` nest
 ## Estrutura
 
 ```text
-office-vba-orchestrator/
+suites/office-vba/office-vba-orchestrator/
   SKILL.md                        # Metadados da habilidade (office-vba-orchestrator)
   references/
     routing-guide.md              # Detecção de tipo de arquivo e lógica de roteamento

@@ -22,7 +22,7 @@ Estructura el arco narrativo de una presentación diapositiva por diapositiva. P
 ## Estructura
 
 ```
-presentation-storyboard/
+suites/presentation/presentation-storyboard/
   SKILL.md
   evals/
     evals.json

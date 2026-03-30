@@ -38,7 +38,7 @@ An end-to-end orchestrator that coordinates the full presentation creation pipel
 ## Structure
 
 ```
-presentation-factory-orchestrator/
+suites/presentation/presentation-factory-orchestrator/
   SKILL.md
   evals/
     evals.json

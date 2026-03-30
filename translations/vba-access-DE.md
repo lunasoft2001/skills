@@ -5,7 +5,7 @@ Dieses Dokument beschreibt den Inhalt des Skills `vba-access` in diesem Reposito
 ## Struktur
 
 ```text
-vba-access/
+suites/office-vba/vba-access/
   SKILL.md                        # Skill-Metadaten (vba-access)
   references/
     access-vba-patterns.md        # VBA-Komponententypen, DAO/ADO-Muster und Fehlerbehebung

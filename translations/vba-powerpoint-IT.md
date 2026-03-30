@@ -5,7 +5,7 @@ Questo documento descrive il contenuto della competenza `vba-powerpoint` in ques
 ## Struttura
 
 ```text
-vba-powerpoint/
+suites/office-vba/vba-powerpoint/
   SKILL.md                        # Metadati della competenza (vba-powerpoint)
   references/
     ppt-vba-patterns.md           # Tipi di componenti VBA, eventi e pattern comuni

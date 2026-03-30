@@ -5,7 +5,7 @@ Dieses Dokument beschreibt den Inhalt des Skills `office-vba-orchestrator` in di
 ## Struktur
 
 ```text
-office-vba-orchestrator/
+suites/office-vba/office-vba-orchestrator/
   SKILL.md                        # Skill-Metadaten (office-vba-orchestrator)
   references/
     routing-guide.md              # Dateitypenerkennung und Weiterleitungslogik

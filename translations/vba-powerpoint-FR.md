@@ -5,7 +5,7 @@ Ce document décrit le contenu de la compétence `vba-powerpoint` dans ce dépô
 ## Structure
 
 ```text
-vba-powerpoint/
+suites/office-vba/vba-powerpoint/
   SKILL.md                        # Métadonnées de la compétence (vba-powerpoint)
   references/
     ppt-vba-patterns.md           # Types de composants VBA, événements et modèles

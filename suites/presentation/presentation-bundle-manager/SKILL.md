@@ -31,7 +31,7 @@ Collect all deliverables from `/deliverables/<slug>/`, generate `index.xlsx` and
 4. **Run the bundle script**:
 
 ```bash
-python3 presentation-bundle-manager/scripts/bundle_manager.py \
+python3 suites/presentation/presentation-bundle-manager/scripts/bundle_manager.py \
   --slug <slug> \
   --path /deliverables/<slug> \
   --title "<project_title>" \

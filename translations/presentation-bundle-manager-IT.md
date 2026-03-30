@@ -50,7 +50,7 @@ python3 scripts/bundle_manager.py \
 ## Struttura
 
 ```
-presentation-bundle-manager/
+suites/presentation/presentation-bundle-manager/
   SKILL.md
   scripts/
     bundle_manager.py

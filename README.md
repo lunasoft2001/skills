@@ -15,17 +15,17 @@ skills/
 ├── bowling-proshop/
 ├── m365-email-manager-skill/
 ├── mcp-evaluator/
-├── office-vba-orchestrator/    ← NEW: routes Office VBA tasks; enforces backup policy
-├── presentation-bundle-manager/
-├── presentation-factory-orchestrator/
-├── presentation-pptx-builder/
-├── presentation-speaker-notes/
-├── presentation-storyboard/
+├── suites/office-vba/office-vba-orchestrator/    ← NEW: routes Office VBA tasks; enforces backup policy
+├── suites/presentation/presentation-bundle-manager/
+├── suites/presentation/presentation-factory-orchestrator/
+├── suites/presentation/presentation-pptx-builder/
+├── suites/presentation/presentation-speaker-notes/
+├── suites/presentation/presentation-storyboard/
 ├── responsible-ai-skill-evaluator/
-├── vba-access/                 ← NEW: VBA modules for Access .accdb
-├── vba-powerpoint/             ← NEW: VBA modules for PowerPoint .pptm
-├── vba-word/                   ← NEW: VBA modules for Word .docm
-├── vbaExcel/
+├── suites/office-vba/vba-access/                 ← NEW: VBA modules for Access .accdb
+├── suites/office-vba/vba-powerpoint/             ← NEW: VBA modules for PowerPoint .pptm
+├── suites/office-vba/vba-word/                   ← NEW: VBA modules for Word .docm
+├── suites/office-vba/vbaExcel/
 └── whatsapp-mcp/
 ```
 
@@ -56,9 +56,9 @@ The `translations/` folder contains human-readable descriptions of each skill in
 - What it includes: Python scripts for VBA export/import, VBOM access helper, and install notes.
 - Typical use cases: Export VBA modules to `.bas`, edit in VS Code, and safely import changes back into the workbook.
 - Main files:
-  - `vbaExcel/SKILL.md`
-  - `vbaExcel/INSTALL.txt`
-  - `vbaExcel/scripts/`
+  - `suites/office-vba/vbaExcel/SKILL.md`
+  - `suites/office-vba/vbaExcel/INSTALL.txt`
+  - `suites/office-vba/vbaExcel/scripts/`
 - Language docs:
   - `translations/vbaExcel-EN.md`
   - `translations/vbaExcel-ES.md`
@@ -143,9 +143,9 @@ A set of five coordinated skills for creating complete professional presentation
 - What it includes: Pipeline stage contracts, slug sanitization logic, progress reporting format, and stage failure recovery.
 - Typical use cases: Creating a complete presentation package from scratch, routing partial pipelines to individual sub-skills, tracking progress across all four stages.
 - Main files:
-  - `presentation-factory-orchestrator/SKILL.md`
-  - `presentation-factory-orchestrator/references/pipeline-stages.md`
-  - `presentation-factory-orchestrator/evals/evals.json`
+  - `suites/presentation/presentation-factory-orchestrator/SKILL.md`
+  - `suites/presentation/presentation-factory-orchestrator/references/pipeline-stages.md`
+  - `suites/presentation/presentation-factory-orchestrator/evals/evals.json`
 - Language docs:
   - `translations/presentation-factory-orchestrator-EN.md`
   - `translations/presentation-factory-orchestrator-ES.md`
@@ -159,9 +159,9 @@ A set of five coordinated skills for creating complete professional presentation
 - What it includes: 3-act narrative framework, slide budget calculator, visual suggestion catalog, transition phrase patterns, and four narrative models (business, pitch, educational, executive summary).
 - Typical use cases: Planning a presentation before building the deck, defining the story arc and key messages, generating a storyboard document for stakeholder review.
 - Main files:
-  - `presentation-storyboard/SKILL.md`
-  - `presentation-storyboard/references/slide-structure-guide.md`
-  - `presentation-storyboard/evals/evals.json`
+  - `suites/presentation/presentation-storyboard/SKILL.md`
+  - `suites/presentation/presentation-storyboard/references/slide-structure-guide.md`
+  - `suites/presentation/presentation-storyboard/evals/evals.json`
 - Language docs:
   - `translations/presentation-storyboard-EN.md`
   - `translations/presentation-storyboard-ES.md`
@@ -175,10 +175,10 @@ A set of five coordinated skills for creating complete professional presentation
 - What it includes: Python builder script, four themes (corporate, minimal, dark, vibrant), storyboard JSON contract, visual placeholder logic, and layout reference.
 - Typical use cases: Converting a storyboard into an actual PowerPoint file, applying consistent branding across all slides, generating a deck programmatically.
 - Main files:
-  - `presentation-pptx-builder/SKILL.md`
-  - `presentation-pptx-builder/scripts/build_pptx.py`
-  - `presentation-pptx-builder/references/pptx-design-guide.md`
-  - `presentation-pptx-builder/evals/evals.json`
+  - `suites/presentation/presentation-pptx-builder/SKILL.md`
+  - `suites/presentation/presentation-pptx-builder/scripts/build_pptx.py`
+  - `suites/presentation/presentation-pptx-builder/references/pptx-design-guide.md`
+  - `suites/presentation/presentation-pptx-builder/evals/evals.json`
 - Language docs:
   - `translations/presentation-pptx-builder-EN.md`
   - `translations/presentation-pptx-builder-ES.md`
@@ -192,9 +192,9 @@ A set of five coordinated skills for creating complete professional presentation
 - What it includes: Three speaking styles (conversational, formal, storytelling), timing enforcement, diplomatic Q&A framing, pre-presentation checklist, and closing statement template.
 - Typical use cases: Preparing a presenter guide for a conference talk, writing rehearsal notes with timing, generating Q&A preparation for a board presentation.
 - Main files:
-  - `presentation-speaker-notes/SKILL.md`
-  - `presentation-speaker-notes/references/notes-format-guide.md`
-  - `presentation-speaker-notes/evals/evals.json`
+  - `suites/presentation/presentation-speaker-notes/SKILL.md`
+  - `suites/presentation/presentation-speaker-notes/references/notes-format-guide.md`
+  - `suites/presentation/presentation-speaker-notes/evals/evals.json`
 - Language docs:
   - `translations/presentation-speaker-notes-EN.md`
   - `translations/presentation-speaker-notes-ES.md`
@@ -208,9 +208,9 @@ A set of five coordinated skills for creating complete professional presentation
 - What it includes: Python bundle script, two-sheet Excel index (Summary + Files), JSON manifest schema, SHA256 checksum generation, and partial bundle handling.
 - Typical use cases: Finalizing a presentation project and archiving all files, generating a delivery checklist, creating a manifest for stakeholder handoff.
 - Main files:
-  - `presentation-bundle-manager/SKILL.md`
-  - `presentation-bundle-manager/scripts/bundle_manager.py`
-  - `presentation-bundle-manager/evals/evals.json`
+  - `suites/presentation/presentation-bundle-manager/SKILL.md`
+  - `suites/presentation/presentation-bundle-manager/scripts/bundle_manager.py`
+  - `suites/presentation/presentation-bundle-manager/evals/evals.json`
 - Language docs:
   - `translations/presentation-bundle-manager-EN.md`
   - `translations/presentation-bundle-manager-ES.md`
@@ -251,9 +251,9 @@ A coordinated suite of four skills for extracting, refactoring, and re-importing
 - What it includes: Routing table, file type detection logic, universal backup policy with rollback procedures.
 - Typical use cases: Identifying which skill to use for an Office file, enforcing backup before any import, handling multi-application sessions.
 - Main files:
-  - `office-vba-orchestrator/SKILL.md`
-  - `office-vba-orchestrator/references/routing-guide.md`
-  - `office-vba-orchestrator/references/backup-policy.md`
+  - `suites/office-vba/office-vba-orchestrator/SKILL.md`
+  - `suites/office-vba/office-vba-orchestrator/references/routing-guide.md`
+  - `suites/office-vba/office-vba-orchestrator/references/backup-policy.md`
 - Language docs:
   - `translations/office-vba-orchestrator-EN.md`
   - `translations/office-vba-orchestrator-ES.md`
@@ -267,10 +267,10 @@ A coordinated suite of four skills for extracting, refactoring, and re-importing
 - What it includes: Python export/import scripts via COM, VBA component reference, Word event patterns.
 - Typical use cases: Exporting Word VBA modules to `.bas` files, editing macros in VS Code, importing refactored code back safely.
 - Main files:
-  - `vba-word/SKILL.md`
-  - `vba-word/scripts/export_vba_word.py`
-  - `vba-word/scripts/import_vba_word.py`
-  - `vba-word/references/word-vba-patterns.md`
+  - `suites/office-vba/vba-word/SKILL.md`
+  - `suites/office-vba/vba-word/scripts/export_vba_word.py`
+  - `suites/office-vba/vba-word/scripts/import_vba_word.py`
+  - `suites/office-vba/vba-word/references/word-vba-patterns.md`
 - Language docs:
   - `translations/vba-word-EN.md`
   - `translations/vba-word-ES.md`
@@ -284,10 +284,10 @@ A coordinated suite of four skills for extracting, refactoring, and re-importing
 - What it includes: Python export/import scripts via COM, VBA component reference, PowerPoint event patterns.
 - Typical use cases: Exporting PowerPoint VBA modules to `.bas` files, editing presentation macros in VS Code, importing refactored code back safely.
 - Main files:
-  - `vba-powerpoint/SKILL.md`
-  - `vba-powerpoint/scripts/export_vba_ppt.py`
-  - `vba-powerpoint/scripts/import_vba_ppt.py`
-  - `vba-powerpoint/references/ppt-vba-patterns.md`
+  - `suites/office-vba/vba-powerpoint/SKILL.md`
+  - `suites/office-vba/vba-powerpoint/scripts/export_vba_ppt.py`
+  - `suites/office-vba/vba-powerpoint/scripts/import_vba_ppt.py`
+  - `suites/office-vba/vba-powerpoint/references/ppt-vba-patterns.md`
 - Language docs:
   - `translations/vba-powerpoint-EN.md`
   - `translations/vba-powerpoint-ES.md`
@@ -301,10 +301,10 @@ A coordinated suite of four skills for extracting, refactoring, and re-importing
 - What it includes: Python export/import scripts via COM, DAO/ADO patterns, Access VBA component reference.
 - Typical use cases: Exporting Access VBA modules to `.bas` files, editing modules in VS Code, importing refactored code back safely.
 - Main files:
-  - `vba-access/SKILL.md`
-  - `vba-access/scripts/export_vba_access.py`
-  - `vba-access/scripts/import_vba_access.py`
-  - `vba-access/references/access-vba-patterns.md`
+  - `suites/office-vba/vba-access/SKILL.md`
+  - `suites/office-vba/vba-access/scripts/export_vba_access.py`
+  - `suites/office-vba/vba-access/scripts/import_vba_access.py`
+  - `suites/office-vba/vba-access/references/access-vba-patterns.md`
 - Language docs:
   - `translations/vba-access-EN.md`
   - `translations/vba-access-ES.md`

@@ -5,7 +5,7 @@ Ce document décrit le contenu de la compétence `office-vba-orchestrator` dans 
 ## Structure
 
 ```text
-office-vba-orchestrator/
+suites/office-vba/office-vba-orchestrator/
   SKILL.md                        # Métadonnées de la compétence (office-vba-orchestrator)
   references/
     routing-guide.md              # Détection du type de fichier et logique de routage
