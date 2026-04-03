@@ -13,6 +13,7 @@ skills/
 │   └── ...
 ├── access-analyzer/            ← skill folder (SKILL.md + scripts + references)
 ├── bowling-proshop/
+├── obsidian-markdown/
 ├── m365-email-manager-skill/
 ├── mcp-evaluator/
 ├── suites/office-vba/office-vba-orchestrator/    ← NEW: routes Office VBA tasks; enforces backup policy
@@ -115,6 +116,23 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/mcp-evaluator-DE.md`
   - `translations/mcp-evaluator-FR.md`
   - `translations/mcp-evaluator-IT.md`
+
+### obsidian-markdown
+- Purpose: Build, normalize, and repair Obsidian-ready Markdown with strict YAML frontmatter, checkboxes, callouts, and wikilinks.
+- What it includes: Formatting rules, repair workflow, validation checklist, linking rules, and ready-to-use templates for PRD/handoff/meeting notes.
+- Typical use cases: Fixing broken Properties blocks, converting generic Markdown to Obsidian style, standardizing recurring operational notes.
+- Main files:
+  - `obsidian-markdown/SKILL.md`
+  - `obsidian-markdown/references/frontmatter-schema.md`
+  - `obsidian-markdown/references/obsidian-validation-checklist.md`
+  - `obsidian-markdown/references/templates-prd-handoff-meeting.md`
+- Language docs:
+  - `translations/obsidian-markdown-EN.md`
+  - `translations/obsidian-markdown-ES.md`
+  - `translations/obsidian-markdown-PT.md`
+  - `translations/obsidian-markdown-DE.md`
+  - `translations/obsidian-markdown-FR.md`
+  - `translations/obsidian-markdown-IT.md`
 
 ---
 
