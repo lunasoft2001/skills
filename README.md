@@ -126,8 +126,12 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `mssql-second-brain/SKILL.md`
   - `mssql-second-brain/scripts/generate_second_brain.py`
 - Language docs:
+  - `translations/mssql-second-brain-DE.md`
   - `translations/mssql-second-brain-EN.md`
   - `translations/mssql-second-brain-ES.md`
+  - `translations/mssql-second-brain-FR.md`
+  - `translations/mssql-second-brain-IT.md`
+  - `translations/mssql-second-brain-PT.md`
 
 ### obsidian-markdown
 - Purpose: Build, normalize, and repair Obsidian-ready Markdown with strict YAML frontmatter, checkboxes, callouts, and wikilinks.
