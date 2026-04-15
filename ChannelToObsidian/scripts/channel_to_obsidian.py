@@ -239,7 +239,7 @@ def load_existing_index(path: Path) -> dict[str, str]:
     if not path.exists():
         return states
     for line in path.read_text(encoding="utf-8").splitlines():
-        m = re.match(r'- \[([ xXpP✓])\].*`([a-zA-Z0-9_-]{11})`', line)
+        m = re.match(r'\| \[([ xXpP✓])\] \|.*\| `([a-zA-Z0-9_-]{11})` \|', line)
         if m:
             mark, vid_id = m.group(1), m.group(2)
             states[vid_id] = mark.strip()
@@ -266,6 +266,9 @@ def write_index(path: Path, channel_name: str, videos: list[dict], existing_stat
         "---",
         "",
         "## Vídeos",,
+        "",
+        "| Estado | Título | Duración | Publicado | ID |",
+        "|:------:|--------|:--------:|-----------|----|",
     ]
 
     for v in videos:
@@ -275,7 +278,7 @@ def write_index(path: Path, channel_name: str, videos: list[dict], existing_stat
         title    = v["title"].replace("|", "–")[:70]
         dur      = v["duration"]
         pub      = v["published"]
-        lines.append(f"- {mark} **{title}** `{vid_id}` · {dur} · {pub}")
+        lines.append(f"| {mark} | **{title}** | {dur} | {pub} | `{vid_id}` |")
 
     lines += [
         "",
@@ -297,7 +300,7 @@ def update_index_processed(path: Path, video_id: str):
     content = path.read_text(encoding="utf-8")
     # Reemplaza solo el [x] de esa línea específica
     content = re.sub(
-        rf'(- \[)[xX](\].*`{re.escape(video_id)}`)',
+        rf'(\| \[)[xX](\] \|.*\| `{re.escape(video_id)}` \|)',
         r'\1p\2',
         content
     )
