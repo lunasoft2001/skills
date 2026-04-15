@@ -29,6 +29,7 @@ skills/
 ├── suites/office-vba/vba-word/                   ← NEW: VBA modules for Word .docm
 ├── suites/office-vba/vbaExcel/
 ├── TranscribeYoutube/
+├── VideoToObsidian/
 └── whatsapp-mcp/
 ```
 
@@ -165,6 +166,22 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/TranscribeYoutube-DE.md`
   - `translations/TranscribeYoutube-FR.md`
   - `translations/TranscribeYoutube-IT.md`
+
+### VideoToObsidian
+- Purpose: Complete pipeline to capture a YouTube video into a structured Obsidian technical note — metadata, transcript, AI-generated content and embedded video in one step.
+- What it includes: Python script (stdlib only), automatic content-type detection (tutorial/concept/demo/talk), 4 note templates, cross-platform Obsidian opener.
+- Depends on: `TranscribeYoutube` skill (sibling directory).
+- Typical use cases: Turning a YouTube tutorial into a step-by-step reference, capturing concept videos into the Second Brain, documenting software demos, archiving talks with key ideas.
+- Main files:
+  - `VideoToObsidian/SKILL.md`
+  - `VideoToObsidian/scripts/video_to_obsidian.py`
+- Language docs:
+  - `translations/VideoToObsidian-EN.md`
+  - `translations/VideoToObsidian-ES.md`
+  - `translations/VideoToObsidian-PT.md`
+  - `translations/VideoToObsidian-DE.md`
+  - `translations/VideoToObsidian-FR.md`
+  - `translations/VideoToObsidian-IT.md`
 
 ---
 
