@@ -265,10 +265,7 @@ def write_index(path: Path, channel_name: str, videos: list[dict], existing_stat
         "",
         "---",
         "",
-        "## Vídeos",
-        "",
-        "| Estado | Título | Dur. | Publicado | ID |",
-        "|--------|--------|------|-----------|-----|",
+        "## Vídeos",,
     ]
 
     for v in videos:
