@@ -44,7 +44,7 @@ VAULT_NAME = os.environ.get("OBSIDIAN_VAULT_NAME") or VAULT.name
 PERSONAS_DIR  = VAULT / "Atlas" / "Personas"
 RECURSOS_DIR  = VAULT / "Atlas" / "Recursos"
 
-VTO_SCRIPT = Path(__file__).parent.parent / "VideoToObsidian" / "scripts" / "video_to_obsidian.py"
+VTO_SCRIPT = Path(__file__).parent.parent.parent / "VideoToObsidian" / "scripts" / "video_to_obsidian.py"
 
 # InnerTube — cliente WEB (no requiere API key)
 _BROWSE_URL = "https://www.youtube.com/youtubei/v1/browse?prettyPrint=false"
