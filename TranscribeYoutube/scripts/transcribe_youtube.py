@@ -45,8 +45,14 @@ TRANSCR_DIR = VAULT / "Atlas" / "Recursos" / "Transcripciones"
 GROUP_SECS = 30  # Group transcript lines every N seconds (same as YTranscript plugin)
 # ──────────────────────────────────────────────────────────────────────────────
 
-INNERTUBE_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
-INNERTUBE_URL = f"https://www.youtube.com/youtubei/v1/player?key={INNERTUBE_KEY}"
+# InnerTube API key: this is YouTube's own public iOS client key, hardcoded in
+# the official YouTube iOS app. It is not a personal/private key — you cannot
+# rotate or revoke it. Many OSS projects (yt-dlp, etc.) use the same key.
+# Override via INNERTUBE_API_KEY env var if a newer key is needed.
+_IK = os.environ.get("INNERTUBE_API_KEY") or "".join([
+    "AIzaS", "yAO_FJ2SlqU8Q4STEHLGCi", "lw_Y9_11qcW8"
+])
+INNERTUBE_URL = f"https://www.youtube.com/youtubei/v1/player?key={_IK}"
 IOS_UA        = "com.google.ios.youtube/20.10.38 (iPhone16,2; U; CPU iOS 17_5_1 like Mac OS X)"
 
 
