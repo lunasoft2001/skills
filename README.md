@@ -16,6 +16,7 @@ skills/
 ├── obsidian-markdown/
 ├── m365-email-manager-skill/
 ├── mcp-evaluator/
+├── mssql-second-brain/
 ├── suites/office-vba/office-vba-orchestrator/    ← NEW: routes Office VBA tasks; enforces backup policy
 ├── suites/presentation/presentation-bundle-manager/
 ├── suites/presentation/presentation-factory-orchestrator/
@@ -116,6 +117,14 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/mcp-evaluator-DE.md`
   - `translations/mcp-evaluator-FR.md`
   - `translations/mcp-evaluator-IT.md`
+
+### mssql-second-brain
+- Purpose: Generate an Obsidian Second Brain vault from SQL Server metadata with zero AI tokens during extraction.
+- What it includes: A reusable SKILL.md and Python generator script for schemas, tables, columns, foreign keys, and backlinks.
+- Typical use cases: SQL Server database mapping, onboarding documentation, and searchable architecture knowledge bases.
+- Main files:
+  - `mssql-second-brain/SKILL.md`
+  - `mssql-second-brain/scripts/generate_second_brain.py`
 
 ### obsidian-markdown
 - Purpose: Build, normalize, and repair Obsidian-ready Markdown with strict YAML frontmatter, checkboxes, callouts, and wikilinks.
