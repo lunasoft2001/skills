@@ -34,7 +34,7 @@ from urllib.parse import quote
 # ── Configuración ─────────────────────────────────────────────────────────────
 
 _DEFAULT_VAULTS = {
-    "Darwin":  os.path.expanduser("~/Documents/Obsidian/MyVault"),
+    "Darwin":  "~/Documents/Obsidian/MyVault",
     "Windows": os.path.expanduser("~/Documents/Obsidian/MyVault"),
     "Linux":   os.path.expanduser("~/Documents/Obsidian/MyVault"),
 }
@@ -46,15 +46,13 @@ RECURSOS_DIR  = VAULT / "Atlas" / "Recursos"
 
 VTO_SCRIPT = Path(__file__).parent.parent / "VideoToObsidian" / "scripts" / "video_to_obsidian.py"
 
-# InnerTube (clave pública del cliente iOS de YouTube — no es una clave personal)
-_IK = os.environ.get("INNERTUBE_API_KEY") or "".join([
-    "AIzaS", "yAO_FJ2SlqU8Q4STEHLGCi", "lw_Y9_11qcW8"
-])
-_BROWSE_URL = f"https://www.youtube.com/youtubei/v1/browse?key={_IK}"
-_IOS_UA     = "com.google.ios.youtube/20.10.38 (iPhone16,2; U; CPU iOS 17_5_1 like Mac OS X)"
+# InnerTube — cliente WEB (no requiere API key)
+_BROWSE_URL = "https://www.youtube.com/youtubei/v1/browse?prettyPrint=false"
+_WEB_UA     = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+_CLIENT_VER = "2.20240415.00.00"
 
 # Parámetros base64 del tab "Videos" del canal en InnerTube
-_VIDEOS_TAB_PARAM = "EgZ2aWRlb3PyBgQKAhgA"
+_VIDEOS_TAB_PARAM = "EgZ2aWRlb3PyBgQKAjoA"
 
 
 # ── InnerTube helpers ──────────────────────────────────────────────────────────
@@ -62,10 +60,12 @@ _VIDEOS_TAB_PARAM = "EgZ2aWRlb3PyBgQKAhgA"
 def _it_post(payload: dict) -> dict:
     body = json.dumps(payload).encode()
     req = Request(_BROWSE_URL, data=body, headers={
-        "Content-Type":              "application/json",
-        "User-Agent":                _IOS_UA,
-        "X-YouTube-Client-Name":     "5",
-        "X-YouTube-Client-Version":  "20.10.38",
+        "Content-Type":             "application/json",
+        "User-Agent":               _WEB_UA,
+        "X-YouTube-Client-Name":    "1",
+        "X-YouTube-Client-Version": _CLIENT_VER,
+        "Origin":                   "https://www.youtube.com",
+        "Referer":                  "https://www.youtube.com/",
     })
     return json.loads(urlopen(req, timeout=20).read())
 
@@ -75,10 +75,9 @@ def _base_payload(browse_id: str) -> dict:
         "browseId": browse_id,
         "context": {
             "client": {
-                "clientName":    "IOS",
-                "clientVersion": "20.10.38",
-                "deviceModel":   "iPhone16,2",
-                "userAgent":     _IOS_UA,
+                "clientName":    "WEB",
+                "clientVersion": _CLIENT_VER,
+                "userAgent":     _WEB_UA,
                 "hl": "en", "gl": "US",
             }
         }
@@ -87,6 +86,32 @@ def _base_payload(browse_id: str) -> dict:
 
 # ── Resolución del canal ───────────────────────────────────────────────────────
 
+def _resolve_handle_to_uc(handle_or_slug: str) -> str:
+    """
+    Resuelve un @handle o /c/slug a un UC... channel ID
+    raspando la página del canal (sin dependencias externas).
+    """
+    if handle_or_slug.startswith("http"):
+        page_url = handle_or_slug
+    elif handle_or_slug.startswith("@") or handle_or_slug.startswith("c/") or handle_or_slug.startswith("user/"):
+        page_url = f"https://www.youtube.com/{handle_or_slug.lstrip('/')}"
+    else:
+        page_url = f"https://www.youtube.com/{handle_or_slug}"
+
+    req = Request(page_url, headers={
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+    })
+    html = urlopen(req, timeout=20).read().decode("utf-8", errors="replace")
+    for pattern in (r'"externalId"\s*:\s*"(UC[\w-]+)"',
+                    r'"channelId"\s*:\s*"(UC[\w-]+)"',
+                    r'channel/(UC[\w-]{20,})'):
+        m = re.search(pattern, html)
+        if m:
+            return m.group(1)
+    raise ValueError(f"No se encontró UC channel ID en {page_url}")
+
+
 def resolve_channel(url: str) -> tuple[str, str]:
     """
     Devuelve (browse_id, channel_name).
@@ -94,39 +119,34 @@ def resolve_channel(url: str) -> tuple[str, str]:
     """
     url = url.strip().rstrip("/")
 
-    # Extraer la parte relevante
-    m = re.search(r'youtube\.com/(@[\w.-]+|c/[\w.-]+|channel/(UC[\w-]+)|user/[\w.-]+)', url)
-    if m:
-        part = m.group(1)
-    elif re.match(r'^@', url):
-        part = url           # ya es un handle
+    # ¿Tenemos ya un UC... ID directo?
+    uc_direct = re.search(r'channel/(UC[\w-]+)', url)
+    if uc_direct:
+        browse_id = uc_direct.group(1)
     elif re.match(r'^UC[\w-]{20,}$', url):
-        part = f"channel/{url}"
+        browse_id = url
     else:
-        part = url           # lo intentamos tal cual
+        # @handle, /c/slug, /user/xxx, URL completa → raspar la página
+        print(f">> Resolviendo handle: {url}", file=sys.stderr)
+        browse_id = _resolve_handle_to_uc(url)
 
-    # Si tenemos UC directamente
-    uc_match = re.search(r'channel/(UC[\w-]+)', part)
-    browse_id = uc_match.group(1) if uc_match else part
-
-    print(f">> Resolviendo canal: {browse_id}", file=sys.stderr)
+    print(f">> Canal UC ID: {browse_id}", file=sys.stderr)
 
     payload = _base_payload(browse_id)
     payload["params"] = _VIDEOS_TAB_PARAM
     data = _it_post(payload)
 
-    # Extraer nombre del canal
+    # Extraer nombre del canal — el cliente WEB usa metadata.channelMetadataRenderer
+    meta_renderer = (
+        data.get("metadata", {}).get("channelMetadataRenderer", {})
+    )
     channel_name = (
-        data.get("header", {})
-            .get("c4TabbedHeaderRenderer", {})
-            .get("title", browse_id)
+        meta_renderer.get("title")
+        or data.get("header", {}).get("pageHeaderRenderer", {}).get("pageTitle")
+        or data.get("header", {}).get("c4TabbedHeaderRenderer", {}).get("title")
+        or browse_id
     )
-    # Si el browse_id era un handle, obtener el UC real
-    uc_id = (
-        data.get("header", {})
-            .get("c4TabbedHeaderRenderer", {})
-            .get("channelId", browse_id)
-    )
+    uc_id = meta_renderer.get("externalId") or browse_id
 
     return uc_id, channel_name, data
 
