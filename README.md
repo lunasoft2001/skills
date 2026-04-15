@@ -30,6 +30,7 @@ skills/
 ├── suites/office-vba/vbaExcel/
 ├── TranscribeYoutube/
 ├── VideoToObsidian/
+├── ChannelToObsidian/
 └── whatsapp-mcp/
 ```
 
@@ -182,6 +183,22 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/VideoToObsidian-DE.md`
   - `translations/VideoToObsidian-FR.md`
   - `translations/VideoToObsidian-IT.md`
+
+### ChannelToObsidian
+- Purpose: Two-phase skill to capture an entire YouTube channel into an Obsidian Second Brain vault. Phase 1 scans all videos into a selectable checklist; Phase 2 processes only the ones you mark with `[x]` using the full VideoToObsidian pipeline.
+- What it includes: Python script (stdlib only), InnerTube browse API with pagination, channel index as MOC in `Atlas/Personas/`, state markers `[ ]` / `[x]` / `[p]`, cross-platform Obsidian opener.
+- Depends on: `VideoToObsidian` skill (sibling directory).
+- Typical use cases: Building a knowledge base from a favourite channel, reviewing all videos before deciding which to study, batch-processing a channel or playlist with selective curation.
+- Main files:
+  - `ChannelToObsidian/SKILL.md`
+  - `ChannelToObsidian/scripts/channel_to_obsidian.py`
+- Language docs:
+  - `translations/ChannelToObsidian-EN.md`
+  - `translations/ChannelToObsidian-ES.md`
+  - `translations/ChannelToObsidian-PT.md`
+  - `translations/ChannelToObsidian-DE.md`
+  - `translations/ChannelToObsidian-FR.md`
+  - `translations/ChannelToObsidian-IT.md`
 
 ---
 
