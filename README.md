@@ -28,6 +28,7 @@ skills/
 ├── suites/office-vba/vba-powerpoint/             ← NEW: VBA modules for PowerPoint .pptm
 ├── suites/office-vba/vba-word/                   ← NEW: VBA modules for Word .docm
 ├── suites/office-vba/vbaExcel/
+├── TranscribeYoutube/
 └── whatsapp-mcp/
 ```
 
@@ -149,6 +150,21 @@ The `translations/` folder contains human-readable descriptions of each skill in
   - `translations/obsidian-markdown-DE.md`
   - `translations/obsidian-markdown-FR.md`
   - `translations/obsidian-markdown-IT.md`
+
+### TranscribeYoutube
+- Purpose: Generate complete Obsidian transcript notes from any YouTube video using the InnerTube Player API (iOS client) with zero external dependencies.
+- What it includes: Python script (stdlib only), 30-second block grouping with clickable timestamps, cross-platform Obsidian opener, configurable vault path via `OBSIDIAN_VAULT` environment variable.
+- Typical use cases: Capturing YouTube tutorials into a Second Brain vault, generating searchable transcript notes with timestamps, archiving video content offline, saving course transcriptions directly to Obsidian.
+- Main files:
+  - `TranscribeYoutube/SKILL.md`
+  - `TranscribeYoutube/scripts/transcribe_youtube.py`
+- Language docs:
+  - `translations/TranscribeYoutube-EN.md`
+  - `translations/TranscribeYoutube-ES.md`
+  - `translations/TranscribeYoutube-PT.md`
+  - `translations/TranscribeYoutube-DE.md`
+  - `translations/TranscribeYoutube-FR.md`
+  - `translations/TranscribeYoutube-IT.md`
 
 ---
 
