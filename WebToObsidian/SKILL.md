@@ -42,6 +42,9 @@ python3 ~/.copilot/skills/WebToObsidian/scripts/web_to_obsidian.py <URL>
 
 # Phase 2 — Process: generate notes for [x] articles
 python3 ~/.copilot/skills/WebToObsidian/scripts/web_to_obsidian.py <URL> --process
+
+# Optional: audit current vault coverage/health
+python3 ~/.copilot/skills/WebToObsidian/scripts/audit_vault.py
 ```
 
 ---
@@ -198,3 +201,4 @@ OBSIDIAN_VAULT="/path/to/vault" python3 ~/.copilot/skills/WebToObsidian/scripts/
 - **Deduplication**: Re-running scan preserves existing `[x]` and `[p]` states
 - **Encoding**: Handles UTF-8, ISO-8859-1 and other common encodings automatically
 - **html2text** (optional): `pip install html2text` produces cleaner Markdown for complex articles
+- **Automatic audit**: `enrich_second_brain.py` now also writes `Atlas/Meta/Auditoria.md` with coverage by topic/source and recommendations

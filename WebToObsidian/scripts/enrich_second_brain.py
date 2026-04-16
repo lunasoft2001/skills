@@ -15,6 +15,7 @@ import platform
 import re
 from pathlib import Path
 from urllib.parse import unquote
+from audit_vault import write_audit_report
 
 _DEFAULT_VAULTS = {
     "Darwin": "/Users/lunasoft/Library/Mobile Documents/iCloud~md~obsidian/Documents/Luna",
@@ -290,6 +291,8 @@ def main():
 
     print(f'NOTES_ENRICHED {len(notes)}')
     print(f'TOPIC_NOTES {sum(1 for notes_list in topic_index.values() if len(notes_list) >= 2)}')
+    report_path = write_audit_report(VAULT, notes, topic_index)
+    print(f'AUDIT_REPORT {report_path}')
 
 
 if __name__ == '__main__':
