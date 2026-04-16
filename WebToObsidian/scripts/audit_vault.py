@@ -12,7 +12,7 @@ Uso directo:
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
 import re
 
@@ -32,15 +32,37 @@ def _extract_frontmatter_date(frontmatter: list[str]) -> str:
 
 
 def _status_for_count(count: int) -> str:
-    if count >= 20:
+    """Semaforo de cobertura por tema para trabajo diario."""
+    if count >= 30:
+        return "SOLIDO"
+    if count >= 15:
         return "OK"
-    if count >= 10:
+    if count >= 8:
         return "MEJORABLE"
-    return "BAJO"
+    if count >= 4:
+        return "BAJO"
+    return "CRITICO"
+
+
+def _age_status_from_date(date_str: str, today: date) -> str:
+    if not date_str:
+        return "SIN_FECHA"
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        return "SIN_FECHA"
+
+    days = (today - d).days
+    if days <= 3:
+        return "ACTIVA"
+    if days <= 10:
+        return "VIGILAR"
+    return "DESACTUALIZADA"
 
 
 def build_audit_report(vault: Path, notes: list[dict], topic_index: dict) -> str:
     generated = datetime.now().isoformat(timespec="seconds")
+    today = date.today()
 
     source_counts: dict[str, int] = defaultdict(int)
     source_latest: dict[str, str] = {}
@@ -60,6 +82,7 @@ def build_audit_report(vault: Path, notes: list[dict], topic_index: dict) -> str
     total_notes = len(notes)
     total_topics = len(topic_index)
     total_sources = len(source_counts)
+    coverage_pct = round((notes_with_topics / total_notes * 100), 1) if total_notes else 0.0
 
     lines: list[str] = [
         "---",
@@ -79,6 +102,7 @@ def build_audit_report(vault: Path, notes: list[dict], topic_index: dict) -> str
         "|---|---|",
         f"| Notas totales auditadas | {total_notes} |",
         f"| Notas con temas detectados | {notes_with_topics} |",
+        f"| Cobertura semantica | {coverage_pct}% |",
         f"| Temas distintos | {total_topics} |",
         f"| Fuentes distintas | {total_sources} |",
         "",
@@ -88,40 +112,52 @@ def build_audit_report(vault: Path, notes: list[dict], topic_index: dict) -> str
         "|---|---:|---:|---|",
     ]
 
-    low_coverage: list[tuple[str, int]] = []
+    low_coverage: list[tuple[str, int, str]] = []
     for (topic_name, _topic_slug), topic_notes in sorted(topic_index.items(), key=lambda x: x[0][0].lower()):
         count = len(topic_notes)
         source_set = {n.get("source") or "Desconocida" for n in topic_notes}
         status = _status_for_count(count)
-        if count < 10:
-            low_coverage.append((topic_name, count))
+        if status in {"CRITICO", "BAJO", "MEJORABLE"}:
+            low_coverage.append((topic_name, count, status))
         lines.append(f"| {topic_name} | {count} | {len(source_set)} | {status} |")
 
     lines += [
         "",
         "## Estado por fuente",
         "",
-        "| Fuente | Notas | Ultima fecha detectada |",
-        "|---|---:|---|",
+        "| Fuente | Notas | Ultima fecha detectada | Estado |",
+        "|---|---:|---|---|",
     ]
 
     for source in sorted(source_counts):
         latest = source_latest.get(source, "sin-fecha")
-        lines.append(f"| {source} | {source_counts[source]} | {latest} |")
+        freshness = _age_status_from_date(latest if latest != "sin-fecha" else "", today)
+        lines.append(f"| {source} | {source_counts[source]} | {latest} | {freshness} |")
 
     lines += ["", "## Recomendaciones", ""]
 
     if low_coverage:
-        lines.append("- Priorizar captura en temas con baja cobertura (<10 notas):")
-        for topic_name, count in low_coverage[:8]:
-            lines.append(f"- {topic_name}: {count} notas")
+        lines.append("- Priorizar captura en temas con cobertura insuficiente:")
+        for topic_name, count, status in low_coverage[:10]:
+            lines.append(f"- {topic_name}: {count} notas ({status})")
     else:
-        lines.append("- No hay temas con baja cobertura por debajo de 10 notas.")
+        lines.append("- No hay temas con cobertura insuficiente.")
 
     sources_without_date = [s for s in sorted(source_counts) if s not in source_latest]
     if sources_without_date:
         lines.append("- Normalizar fechas en frontmatter para estas fuentes:")
         for source in sources_without_date:
+            lines.append(f"- {source}")
+
+    stale_sources = []
+    for source in sorted(source_counts):
+        latest = source_latest.get(source, "")
+        freshness = _age_status_from_date(latest, today)
+        if freshness == "DESACTUALIZADA":
+            stale_sources.append(source)
+    if stale_sources:
+        lines.append("- Revisar fuentes desactualizadas (mas de 10 dias sin fecha reciente):")
+        for source in stale_sources:
             lines.append(f"- {source}")
 
     lines.append("")
