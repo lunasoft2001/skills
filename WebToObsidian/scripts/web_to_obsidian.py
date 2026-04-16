@@ -306,6 +306,43 @@ def extract_pub_date(html: str) -> str:
 def safe_name(s: str, max_len: int = 80) -> str:
     return re.sub(r'[\\/*?:"<>|#\[\]]', "", s).strip()[:max_len].strip()
 
+TOPIC_SPECS = [
+    ("Access", "access", [r"\baccess\b", r"\bvba\b", r"\bdocmd\b", r"\bcurrentdb\b"]),
+    ("SQL", "sql", [r"\bsql\b", r"\bselect\b", r"\bjoin\b", r"\bquery\b", r"\bconsulta(?:s)?\b"]),
+    ("SQL Server", "sql-server", [r"sql server", r"\bt-sql\b", r"\bssms\b", r"parameter sniffing", r"always on"]),
+    ("VBA", "vba", [r"\bvba\b", r"\bcurrentdb\b", r"\bdocmd\b", r"\bfunction\b", r"\bsub\b"]),
+    ("Consultas", "consultas", [r"\bconsulta(?:s)?\b", r"\bquery\b", r"\bselect\b", r"\bwhere\b"]),
+    ("Tablas", "tablas", [r"\btabla(?:s)?\b", r"\brecordset\b", r"\bdao\b", r"\bado\b"]),
+    ("Formularios", "formularios", [r"\bformulario(?:s)?\b", r"\bsubformulario(?:s)?\b", r"\bcombobox\b", r"\blistbox\b"]),
+    ("Informes", "informes", [r"\binforme(?:s)?\b", r"\breport(?:e|es)?\b"]),
+    ("DAO", "dao", [r"\bdao\b", r"\brecordsaffected\b", r"\bcurrentdb\b"]),
+    ("ADO", "ado", [r"\bado\b", r"adodb", r"ole\s*db", r"oledb"]),
+    ("Excel", "excel", [r"\bexcel\b", r"\bxls[xm]?\b"]),
+    ("XML", "xml", [r"\bxml\b", r"\bdom\b"]),
+    ("PDF", "pdf", [r"\bpdf\b"]),
+    ("API Windows", "api-windows", [r"windows api", r"\bapi\b"]),
+    ("FSO", "fso", [r"\bfso\b", r"filesystemobject"]),
+]
+
+def detect_topics(title: str, markdown_content: str) -> list[tuple[str, str]]:
+    haystack = f"{title}\n{markdown_content}".lower()
+    topics = []
+    for topic_name, topic_slug, patterns in TOPIC_SPECS:
+        if any(re.search(pattern, haystack, re.IGNORECASE) for pattern in patterns):
+            topics.append((topic_name, topic_slug))
+    return topics
+
+
+def build_topic_section(topics: list[tuple[str, str]]) -> list[str]:
+    if not topics:
+        return []
+    lines = ["## Conexiones", "", "### Temas", ""]
+    for topic_name, _topic_slug in topics:
+        lines.append(f"- [[Atlas/Temas/{safe_name(topic_name)}]]")
+    lines += ["", "### Uso", "", "- Conecta esta nota con otras fuentes sobre el mismo tema dentro del vault."]
+    return lines
+
+
 def normalize_site_name(name: str) -> str:
     name = re.sub(r"\s+", " ", name).strip(" -|\t\n\r\"")
     name = re.sub(r"^(?:el|the)\s+blog\s+(?:de|of)\s+", "", name, flags=re.IGNORECASE)
@@ -752,27 +789,39 @@ def process_item(item: dict, site_name: str, page_cache: dict) -> Path:
     # Clean up content: strip trailing whitespace per line, remove % artifacts
     content_md = "\n".join(ln.rstrip() for ln in content_md.splitlines())
     content_md = re.sub(r"#ai-generated[^\n]*", "", content_md).strip()
+    topics = detect_topics(title, content_md)
 
     # Build note
     note_title  = safe_name(title)
     source_tag  = re.sub(r"[^\w-]", "-", safe_name(site_name).lower())
+    topic_tags  = [topic_slug for _topic_name, topic_slug in topics]
+    tag_line    = ", ".join(["atlas", "recurso", "web", source_tag] + topic_tags)
+    topic_names = ", ".join(f'"{topic_name}"' for topic_name, _topic_slug in topics)
+    topic_section = build_topic_section(topics)
     note_lines  = [
         "---",
-        f"tags: [atlas, recurso, web, {source_tag}]",
+        f"tags: [{tag_line}]",
         f'fuente: "{site_name}"',
+        f'persona: "[[Atlas/Personas/{safe_name(site_name)}]]"',
         f'url: "{url}"',
         f'fecha: "{item_date}"',
         f"capturado: {date.today().isoformat()}",
+        f"temas: [{topic_names}]",
         "---",
         "",
         f"# {title}",
         "",
+        f"> [[Atlas/Personas/{safe_name(site_name)}]]",
         f"> [Fuente original]({url}){' — ' + item_date if item_date else ''}",
         "",
         "---",
         "",
         content_md,
         "",
+    ]
+    if topic_section:
+        note_lines += topic_section + ["", "---", ""]
+    note_lines += [
         "#ai-generated",
     ]
 

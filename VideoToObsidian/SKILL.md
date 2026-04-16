@@ -76,6 +76,9 @@ El JSON contiene estos campos clave:
 | `wikilink_transcript` | Wikilink listo para insertar |
 | `transcript_content` | Transcripción completa |
 | `target_note` | Ruta donde guardar la nota principal |
+| `topics` | Lista de nombres de temas detectados (ej: `["Access", "VBA"]`) |
+| `topic_tags` | Lista de slugs para frontmatter (ej: `["access", "vba"]`) |
+| `topic_section` | Bloque Markdown listo para insertar como `## Conexiones` |
 | `persona` | Objeto con info del canal (ver abajo) |
 
 **Objeto `persona`:**
@@ -141,12 +144,13 @@ Usa la plantilla del tipo detectado. **El frontmatter y el bloque de vídeo son 
 
 ```markdown
 ---
-tags: [atlas, recurso, <tag-tema>]
+tags: [atlas, recurso, youtube, <topic_tags separados por coma>]
 url: <url>
 canal: "<channel>"
 persona: "<persona_wikilink>"
 duracion: "<duration>"
 fecha-guardado: <fecha_guardado>
+temas: [<topics separados por coma entre comillas>]
 ---
 
 # <title>
@@ -162,6 +166,8 @@ fecha-guardado: <fecha_guardado>
 
 ---
 ```
+
+> **Nota:** Si `topic_section` viene relleno en el JSON, insertarlo al final de la nota (antes de `## Fuentes` si existe, o al final). Los wikilinks `[[Atlas/Temas/...]]` conectan la nota con los hubs de temas del vault.
 
 Luego añade las secciones según el tipo:
 
@@ -191,8 +197,9 @@ Luego añade las secciones según el tipo:
 ## Fuentes consultadas
 - Vídeo: [<title>](<url>) — <channel>
 
-## Conexiones
-- [[...]] — <razón del enlace>
+<topic_section>
+
+*(Si `topic_section` está vacío en el JSON, añade aquí manualmente wikilinks a notas relacionadas del vault)*
 ```
 
 #### Plantilla CONCEPTO/TEORÍA
@@ -214,8 +221,9 @@ Luego añade las secciones según el tipo:
 ## Fuentes consultadas
 - Vídeo: [<title>](<url>) — <channel>
 
-## Conexiones
-- [[...]] — <razón del enlace>
+<topic_section>
+
+*(Si `topic_section` está vacío en el JSON, añade aquí manualmente wikilinks a notas relacionadas del vault)*
 ```
 
 #### Plantilla DEMO/SHOWCASE
@@ -236,8 +244,9 @@ Luego añade las secciones según el tipo:
 ## Fuentes consultadas
 - Vídeo: [<title>](<url>) — <channel>
 
-## Conexiones
-- [[...]] — <razón del enlace>
+<topic_section>
+
+*(Si `topic_section` está vacío en el JSON, añade aquí manualmente wikilinks a notas relacionadas del vault)*
 ```
 
 #### Plantilla CHARLA/ENTREVISTA
@@ -258,8 +267,9 @@ Luego añade las secciones según el tipo:
 ## Fuentes consultadas
 - Vídeo: [<title>](<url>) — <channel>
 
-## Conexiones
-- [[...]] — <razón del enlace>
+<topic_section>
+
+*(Si `topic_section` está vacío en el JSON, añade aquí manualmente wikilinks a notas relacionadas del vault)*
 ```
 
 ### Paso 5 — Guardar la nota

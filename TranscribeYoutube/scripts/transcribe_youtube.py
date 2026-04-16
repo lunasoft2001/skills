@@ -1,59 +1,51 @@
 #!/usr/bin/env python3
 """
-transcribe_youtube.py — Full YouTube transcript via InnerTube API (iOS client).
+transcribe_youtube.py — Transcripción completa vía InnerTube API (cliente iOS).
 
-Zero external dependencies — Python 3.9+ standard library only.
-Same API used internally by the obsidian-yt-transcript plugin.
+Sin dependencias externas — solo biblioteca estándar Python 3.9+.
+Misma API que usa el plugin YTranscript de Obsidian.
 
-Usage:
-    python3 transcribe_youtube.py <YOUTUBE_URL>
-    python3 transcribe_youtube.py <YOUTUBE_URL> --lang en
-
-Configuration (environment variables):
-    OBSIDIAN_VAULT       Absolute path to your Obsidian vault folder
-    OBSIDIAN_VAULT_NAME  Vault name as shown in Obsidian (default: folder name)
+Uso:
+    python3 transcribe_youtube.py <URL_DE_YOUTUBE>
+    python3 transcribe_youtube.py <URL_DE_YOUTUBE> --lang en
 """
 
 import sys
 import re
 import json
 import html as html_lib
-import os
-import platform
-import subprocess
-import xml.etree.ElementTree as ET
 from pathlib import Path
 from datetime import date
 from urllib.request import urlopen, Request
 from urllib.parse import quote
 from urllib.error import URLError, HTTPError
+import xml.etree.ElementTree as ET
+import subprocess
+import platform
 
-# ── Configuration ─────────────────────────────────────────────────────────────
-# Override with OBSIDIAN_VAULT environment variable.
+# ── Configuración ──────────────────────────────────────────────────────────────────────────────
+VAULT_NAME = "Luna"
+
+# Detecta la ruta del vault según el sistema operativo.
+# Sobreescribe con la variable de entorno OBSIDIAN_VAULT si está definida.
+import os as _os
 _DEFAULT_VAULTS = {
-    "Darwin":  str(Path.home() / "Documents" / "Obsidian" / "MyVault"),
-    "Windows": str(Path.home() / "Documents" / "Obsidian" / "MyVault"),
-    "Linux":   str(Path.home() / "Obsidian" / "MyVault"),
+    "Darwin":  "/Users/lunasoft/Library/Mobile Documents/iCloud~md~obsidian/Documents/Luna",
+    "Windows": r"C:\Users\lunasoft\Documents\Obsidian\Luna",
+    "Linux":   "/home/lunasoft/Obsidian/Luna",
 }
-VAULT      = Path(os.environ.get("OBSIDIAN_VAULT") or _DEFAULT_VAULTS.get(platform.system(), _DEFAULT_VAULTS["Darwin"]))
-VAULT_NAME = os.environ.get("OBSIDIAN_VAULT_NAME") or VAULT.name
-
-# Transcript notes go here inside the vault.
-# Change to match your vault structure if needed.
+VAULT       = Path(_os.environ.get("OBSIDIAN_VAULT") or _DEFAULT_VAULTS.get(platform.system(), _DEFAULT_VAULTS["Darwin"]))
 TRANSCR_DIR = VAULT / "Atlas" / "Recursos" / "Transcripciones"
 
-GROUP_SECS = 30  # Group transcript lines every N seconds (same as YTranscript plugin)
-# ──────────────────────────────────────────────────────────────────────────────
-
-# InnerTube API key: this is YouTube's own public iOS client key, hardcoded in
-# the official YouTube iOS app. It is not a personal/private key — you cannot
-# rotate or revoke it. Many OSS projects (yt-dlp, etc.) use the same key.
-# Override via INNERTUBE_API_KEY env var if a newer key is needed.
-_IK = os.environ.get("INNERTUBE_API_KEY") or "".join([
+# Clave pública InnerTube del cliente iOS de YouTube — no es una clave personal.
+# Override vía env var INNERTUBE_API_KEY si se necesita una clave distinta.
+_IK = _os.environ.get("INNERTUBE_API_KEY") or "".join([
     "AIzaS", "yAO_FJ2SlqU8Q4STEHLGCi", "lw_Y9_11qcW8"
 ])
 INNERTUBE_URL = f"https://www.youtube.com/youtubei/v1/player?key={_IK}"
 IOS_UA        = "com.google.ios.youtube/20.10.38 (iPhone16,2; U; CPU iOS 17_5_1 like Mac OS X)"
+GROUP_SECS    = 30   # Agrupar líneas cada N segundos (estilo YTranscript)
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 def extract_video_id(url: str):
@@ -136,52 +128,99 @@ def sanitize(name: str) -> str:
     return re.sub(r'[<>:"/\\|?*\n\r]', "", name).strip()
 
 
-def generate_md(video_id, title, channel, lang, entries) -> str:
+# ── Detección semántica de temas ──────────────────────────────────────────────
+
+TOPIC_SPECS = [
+    ("Access", "access", [r"\baccess\b", r"\bvba\b", r"\bdocmd\b", r"\bcurrentdb\b"]),
+    ("SQL", "sql", [r"\bsql\b", r"\bselect\b", r"\bjoin\b", r"\bquery\b", r"\bconsulta(?:s)?\b"]),
+    ("SQL Server", "sql-server", [r"sql server", r"\bt-sql\b", r"\bssms\b"]),
+    ("VBA", "vba", [r"\bvba\b", r"\bcurrentdb\b", r"\bdocmd\b", r"\bfunction\b", r"\bsub\b"]),
+    ("Consultas", "consultas", [r"\bconsulta(?:s)?\b", r"\bquery\b", r"\bselect\b", r"\bwhere\b"]),
+    ("Tablas", "tablas", [r"\btabla(?:s)?\b", r"\brecordset\b"]),
+    ("Formularios", "formularios", [r"\bformulario(?:s)?\b", r"\bsubformulario(?:s)?\b", r"\bcombobox\b", r"\blistbox\b"]),
+    ("Informes", "informes", [r"\binforme(?:s)?\b", r"\breport(?:e|es)?\b"]),
+    ("DAO", "dao", [r"\bdao\b", r"\brecordsaffected\b", r"\bcurrentdb\b"]),
+    ("ADO", "ado", [r"\badodb\b", r"ole\s*db", r"\boledb\b"]),
+    ("Excel", "excel", [r"\bexcel\b", r"\bxls[xm]?\b"]),
+    ("XML", "xml", [r"\bxml\b", r"\bdom\b"]),
+    ("PDF", "pdf", [r"\bpdf\b"]),
+    ("API Windows", "api-windows", [r"windows api", r"\bwinapi\b"]),
+    ("FSO", "fso", [r"\bfso\b", r"filesystemobject"]),
+    ("IA", "ia", [r"\binteligencia artificial\b", r"\b(?:ai|ia)\b", r"\bllm\b", r"\bgpt\b", r"\bchatgpt\b", r"\bcopilot\b"]),
+    ("Python", "python", [r"\bpython\b", r"\bpypi\b", r"\bpip\b"]),
+    ("Power Automate", "power-automate", [r"power automate", r"\bflow\b", r"power platform"]),
+]
+
+
+def detect_topics(title: str, content: str) -> list[tuple[str, str]]:
+    haystack = f"{title}\n{content}".lower()
+    topics = []
+    for topic_name, topic_slug, patterns in TOPIC_SPECS:
+        if any(re.search(p, haystack, re.IGNORECASE) for p in patterns):
+            topics.append((topic_name, topic_slug))
+    return topics
+
+
+def build_topic_section(topics: list[tuple[str, str]]) -> str:
+    if not topics:
+        return ""
+    lines = ["## Conexiones", "", "### Temas", ""]
+    for topic_name, _slug in topics:
+        lines.append(f"- [[Atlas/Temas/{topic_name}]]")
+    lines += ["", "### Relacionado", "", "- *(Añade aquí notas relacionadas del vault)*"]
+    return "\n".join(lines)
+
+
+def generate_md(video_id, title, channel, lang, entries, topics=None) -> str:
     url   = f"https://www.youtube.com/watch?v={video_id}"
     today = date.today().strftime("%Y-%m-%d")
+    topic_names = [name for name, _slug in (topics or [])]
+    topic_slugs = [slug for _name, slug in (topics or [])]
+    tag_line = "transcripcion, recurso" + (", " + ", ".join(topic_slugs) if topic_slugs else "")
+    quoted_names = ", ".join('"' + n + '"' for n in topic_names)
+    temas_line = (f"temas: [{quoted_names}]" if topic_names else "")
     lines = [
         "---",
-        "tags: [transcripcion, recurso]",
+        f"tags: [{tag_line}]",
         f"video-id: {video_id}",
         f"url: {url}",
         f'canal: "{channel}"',
         f'titulo: "{title}"',
         f"idioma: {lang}",
         f"fecha-guardado: {today}",
+    ]
+    if temas_line:
+        lines.append(temas_line)
+    lines += [
         "---", "",
         f"# {title}",
         f"**Canal:** {channel}  ",
         f"**URL:** {url}  ", "",
-        "\u2190 Main note: `[[...]]`  *(update this wikilink)*",
-        "", "---", "", "## Transcript", "",
+        "\u2190 Nota principal: `[[...]]`  *(actualiza este wikilink)*",
+        "", "---", "", "## Transcripci\u00f3n", "",
     ]
     for start, text in entries:
         lines.append(f"[{fmt_ts(start)}]({url}&t={int(start)}) {text}")
+    if topics:
+        lines += ["", "---", "", build_topic_section(topics)]
     return "\n".join(lines) + "\n"
 
 
 def open_obsidian(relative: str):
     uri = f"obsidian://open?vault={quote(VAULT_NAME)}&file={quote(relative, safe='')}"
     system = platform.system()
-    try:
-        if system == "Darwin":
-            subprocess.run(["open", uri])
-        elif system == "Windows":
-            subprocess.run(["cmd", "/c", "start", "", uri], shell=False)
-        else:
-            subprocess.run(["xdg-open", uri])
-    except Exception:
-        print(f"   (Could not open Obsidian automatically. URI: {uri})")
+    if system == "Darwin":
+        subprocess.run(["open", uri])
+    elif system == "Windows":
+        subprocess.run(["cmd", "/c", "start", "", uri], shell=False)
+    else:  # Linux
+        subprocess.run(["xdg-open", uri])
 
 
 def main():
     args = sys.argv[1:]
     if not args or args[0] in ("-h", "--help"):
         print(__doc__); sys.exit(0)
-
-    if not os.environ.get("OBSIDIAN_VAULT"):
-        print(f"[!] OBSIDIAN_VAULT not set. Using default: {VAULT}")
-        print(f"    Set it with: export OBSIDIAN_VAULT=\"/path/to/your/vault\"\n")
 
     url  = args[0]
     lang_pref = ["es", "en"]
@@ -192,44 +231,50 @@ def main():
 
     video_id = extract_video_id(url)
     if not video_id:
-        print(f"[x] Unrecognized URL: {url}"); sys.exit(1)
+        print(f"\u2717  URL no reconocida: {url}"); sys.exit(1)
 
-    print(f"[~] Connecting to InnerTube API (iOS client)...")
+    print(f"\u27f3  Conectando con InnerTube API (cliente iOS)...")
     try:
         player = fetch_player_data(video_id, lang=lang_pref[0])
     except (URLError, HTTPError) as e:
-        print(f"[x] Network error: {e}"); sys.exit(1)
+        print(f"\u2717  Error de red: {e}"); sys.exit(1)
 
     status = player.get("playabilityStatus", {}).get("status", "OK")
     if status in ("ERROR", "LOGIN_REQUIRED", "UNPLAYABLE"):
-        reason = player.get("playabilityStatus", {}).get("reason", status)
-        print(f"[x] Video unavailable: {reason}"); sys.exit(1)
+        print(f"\u2717  V\u00eddeo no disponible: {player.get('playabilityStatus',{}).get('reason', status)}")
+        sys.exit(1)
 
-    title   = html_lib.unescape(player.get("videoDetails", {}).get("title", "Untitled")).strip()
-    channel = html_lib.unescape(player.get("videoDetails", {}).get("author", "Unknown")).strip()
-    print(f"    Video : {title}")
-    print(f"    Channel: {channel}")
-    print(f"    ID    : {video_id}")
+    title   = html_lib.unescape(player.get("videoDetails", {}).get("title", "Sin t\u00edtulo")).strip()
+    channel = html_lib.unescape(player.get("videoDetails", {}).get("author", "Desconocido")).strip()
+    print(f"   V\u00eddeo : {title}")
+    print(f"   Canal : {channel}")
+    print(f"   ID    : {video_id}")
 
     tracks = player.get("captions", {}).get("playerCaptionsTracklistRenderer", {}).get("captionTracks", [])
     if not tracks:
-        print("[x] This video has no subtitles available."); sys.exit(1)
+        print("\u2717  Este v\u00eddeo no tiene subt\u00edtulos disponibles."); sys.exit(1)
 
-    print(f"    Languages: {', '.join(t.get('languageCode','?') for t in tracks)}")
+    print(f"   Idiomas: {', '.join(t.get('languageCode','?') for t in tracks)}")
     track = find_track(tracks, lang_pref)
     lang  = track.get("languageCode", "??")
-    print(f"    Using: {lang}")
+    print(f"   Usando : {lang}")
 
-    print(f"[~] Downloading transcript...")
+    print(f"\u27f3  Descargando transcripci\u00f3n...")
     try:
-        raw = fetch_transcript(track["baseUrl"])
+        raw  = fetch_transcript(track["baseUrl"])
     except (URLError, ET.ParseError) as e:
-        print(f"[x] Error: {e}"); sys.exit(1)
+        print(f"\u2717  Error: {e}"); sys.exit(1)
 
     entries = group_entries(raw)
-    print(f"    {len(raw)} lines -> {len(entries)} blocks")
+    print(f"   {len(raw)} l\u00edneas \u2192 {len(entries)} bloques")
 
-    md_content  = generate_md(video_id, title, channel, lang, entries)
+    # Detección de temas semánticos
+    full_text = " ".join(text for _start, text in entries)
+    topics = detect_topics(title, full_text)
+    if topics:
+        print(f"   Temas: {', '.join(name for name, _ in topics)}")
+
+    md_content  = generate_md(video_id, title, channel, lang, entries, topics=topics)
     safe_title  = sanitize(title)[:60]
     filename    = f"{video_id} - {safe_title}.md"
     output_path = TRANSCR_DIR / filename
@@ -238,14 +283,13 @@ def main():
     existed = output_path.exists()
     output_path.write_text(md_content, encoding="utf-8")
 
-    print(f"\n[ok] {'Updated' if existed else 'Created'}: {filename}")
+    print(f"\n\u2713  {'Actualizada' if existed else 'Nota creada'}: {filename}")
 
     open_obsidian(str(output_path.relative_to(VAULT)).replace("\\", "/"))
-
     wikilink = f"[[Transcripciones/{video_id} - {safe_title}]]"
-    print(f"[->] Obsidian opened.")
-    print(f"\n    Wikilink for main note:")
-    print(f"    Transcript: {wikilink}")
+    print(f"\u2192  Obsidian abierto.")
+    print(f"\n   Wikilink para la nota principal:")
+    print(f"   >> Transcripcion completa: {wikilink}")
 
 
 if __name__ == "__main__":

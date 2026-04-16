@@ -319,6 +319,41 @@ def safe_filename(title: str, max_len: int = 60) -> str:
     clean = re.sub(r'[\\/*?:"<>|#\[\]]', '', title)
     return clean.strip()[:max_len].strip()
 
+TOPIC_SPECS = [
+    ("Access", "access", [r"\baccess\b", r"\bvba\b", r"\bdocmd\b", r"\bcurrentdb\b"]),
+    ("SQL", "sql", [r"\bsql\b", r"\bselect\b", r"\bjoin\b", r"\bquery\b", r"\bconsulta(?:s)?\b"]),
+    ("SQL Server", "sql-server", [r"sql server", r"\bt-sql\b", r"\bssms\b", r"parameter sniffing", r"always on"]),
+    ("VBA", "vba", [r"\bvba\b", r"\bcurrentdb\b", r"\bdocmd\b", r"\bfunction\b", r"\bsub\b"]),
+    ("Consultas", "consultas", [r"\bconsulta(?:s)?\b", r"\bquery\b", r"\bselect\b", r"\bwhere\b"]),
+    ("Tablas", "tablas", [r"\btabla(?:s)?\b", r"\brecordset\b", r"\bdao\b", r"\bado\b"]),
+    ("Formularios", "formularios", [r"\bformulario(?:s)?\b", r"\bsubformulario(?:s)?\b", r"\bcombobox\b", r"\blistbox\b"]),
+    ("Informes", "informes", [r"\binforme(?:s)?\b", r"\breport(?:e|es)?\b"]),
+    ("DAO", "dao", [r"\bdao\b", r"\brecordsaffected\b", r"\bcurrentdb\b"]),
+    ("ADO", "ado", [r"\bado\b", r"adodb", r"ole\s*db", r"oledb"]),
+    ("Excel", "excel", [r"\bexcel\b", r"\bxls[xm]?\b"]),
+    ("XML", "xml", [r"\bxml\b", r"\bdom\b"]),
+    ("PDF", "pdf", [r"\bpdf\b"]),
+    ("API Windows", "api-windows", [r"windows api", r"\bapi\b"]),
+    ("FSO", "fso", [r"\bfso\b", r"filesystemobject"]),
+]
+
+def detect_topics(title: str, markdown_content: str) -> list[tuple[str, str]]:
+    haystack = f"{title}\n{markdown_content}".lower()
+    topics = []
+    for topic_name, topic_slug, patterns in TOPIC_SPECS:
+        if any(re.search(pattern, haystack, re.IGNORECASE) for pattern in patterns):
+            topics.append((topic_name, topic_slug))
+    return topics
+
+def build_topic_section(topics: list[tuple[str, str]]) -> str:
+    if not topics:
+        return ""
+    lines = ["## Conexiones", "", "### Temas", ""]
+    for topic_name, _topic_slug in topics:
+        lines.append(f"- [[Atlas/Temas/{safe_filename(topic_name, 80)}]]")
+    lines += ["", "### Uso", "", "- Conecta esta nota con otras fuentes sobre el mismo tema dentro del vault."]
+    return "\n".join(lines)
+
 def page_id_from_url(url: str) -> str:
     """Genera un ID único para la página (slug del path o hash)."""
     parsed = urlparse(url)
@@ -458,6 +493,7 @@ def main():
     print(">> [3/4] Convirtiendo a Markdown...", file=sys.stderr)
     content_html = extract_content(source_html)
     markdown_content = html_to_markdown(content_html)
+    topics = detect_topics(title, markdown_content)
     
     # 4. Gestionar Persona
     print(">> [4/4] Actualizando índice de Personas...", file=sys.stderr)
@@ -485,14 +521,21 @@ def main():
         created_now = False
 
     # 5. Guardar nota técnica en Atlas/Recursos/<Sitio>/
+    source_tag = re.sub(r"[^\w-]", "-", safe_filename(site_name).lower())
+    topic_tags = [topic_slug for _topic_name, topic_slug in topics]
+    tag_list = ", ".join(["atlas", "recurso", "web", source_tag] + topic_tags)
+    topic_names = ", ".join(f'"{topic_name}"' for topic_name, _topic_slug in topics)
+    topic_section = build_topic_section(topics)
+
     note_text = f"""---
-tags: [atlas, recurso, web]
+tags: [{tag_list}]
 url: {source_url}
 sitio: \"{site_name}\"
 persona: \"[[Atlas/Personas/{safe_filename(site_name)}]]\"
 author: \"{author or 's.d.'}\"
 date-published: \"{date_published or 's.d.'}\"
 date-saved: {date.today().isoformat()}
+temas: [{topic_names}]
 ---
 
 # {title}
@@ -506,6 +549,10 @@ date-saved: {date.today().isoformat()}
 ## Contenido
 
 {markdown_content}
+
+---
+
+{topic_section}
 
 ---
 
