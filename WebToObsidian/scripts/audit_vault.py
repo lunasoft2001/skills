@@ -60,6 +60,24 @@ def _age_status_from_date(date_str: str, today: date) -> str:
     return "DESACTUALIZADA"
 
 
+def _priority_for_topic_status(status: str) -> str:
+    if status == "CRITICO":
+        return "P1"
+    if status == "BAJO":
+        return "P2"
+    if status == "MEJORABLE":
+        return "P3"
+    return "OK"
+
+
+def _priority_for_source_freshness(freshness: str) -> str:
+    if freshness in {"DESACTUALIZADA", "SIN_FECHA"}:
+        return "P1"
+    if freshness == "VIGILAR":
+        return "P2"
+    return "OK"
+
+
 def build_audit_report(vault: Path, notes: list[dict], topic_index: dict) -> str:
     generated = datetime.now().isoformat(timespec="seconds")
     today = date.today()
@@ -112,13 +130,16 @@ def build_audit_report(vault: Path, notes: list[dict], topic_index: dict) -> str
         "|---|---:|---:|---|",
     ]
 
-    low_coverage: list[tuple[str, int, str]] = []
+    low_coverage: list[tuple[str, int, str, str]] = []
+    topic_priorities: list[tuple[str, str, int, str]] = []
     for (topic_name, _topic_slug), topic_notes in sorted(topic_index.items(), key=lambda x: x[0][0].lower()):
         count = len(topic_notes)
         source_set = {n.get("source") or "Desconocida" for n in topic_notes}
         status = _status_for_count(count)
+        priority = _priority_for_topic_status(status)
         if status in {"CRITICO", "BAJO", "MEJORABLE"}:
-            low_coverage.append((topic_name, count, status))
+            low_coverage.append((topic_name, count, status, priority))
+            topic_priorities.append((priority, topic_name, count, status))
         lines.append(f"| {topic_name} | {count} | {len(source_set)} | {status} |")
 
     lines += [
@@ -129,17 +150,42 @@ def build_audit_report(vault: Path, notes: list[dict], topic_index: dict) -> str
         "|---|---:|---|---|",
     ]
 
+    source_priorities: list[tuple[str, str, str]] = []
     for source in sorted(source_counts):
         latest = source_latest.get(source, "sin-fecha")
         freshness = _age_status_from_date(latest if latest != "sin-fecha" else "", today)
+        src_priority = _priority_for_source_freshness(freshness)
+        if src_priority != "OK":
+            source_priorities.append((src_priority, source, freshness))
         lines.append(f"| {source} | {source_counts[source]} | {latest} | {freshness} |")
+
+    lines += [
+        "",
+        "## Prioridades operativas",
+        "",
+        "| Prioridad | Tipo | Elemento | Estado |",
+        "|---|---|---|---|",
+    ]
+
+    combined = []
+    for prio, topic_name, count, status in topic_priorities:
+        combined.append((prio, "Tema", f"{topic_name} ({count} notas)", status))
+    for prio, source, freshness in source_priorities:
+        combined.append((prio, "Fuente", source, freshness))
+
+    if combined:
+        prio_order = {"P1": 1, "P2": 2, "P3": 3, "OK": 4}
+        for prio, kind, element, state in sorted(combined, key=lambda x: (prio_order.get(x[0], 9), x[1], x[2].lower()))[:20]:
+            lines.append(f"| {prio} | {kind} | {element} | {state} |")
+    else:
+        lines.append("| OK | Sistema | Sin elementos urgentes | Estable |")
 
     lines += ["", "## Recomendaciones", ""]
 
     if low_coverage:
         lines.append("- Priorizar captura en temas con cobertura insuficiente:")
-        for topic_name, count, status in low_coverage[:10]:
-            lines.append(f"- {topic_name}: {count} notas ({status})")
+        for topic_name, count, status, priority in low_coverage[:10]:
+            lines.append(f"- {priority} {topic_name}: {count} notas ({status})")
     else:
         lines.append("- No hay temas con cobertura insuficiente.")
 
