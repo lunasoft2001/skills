@@ -142,6 +142,9 @@ Both skills share:
 - The same folder structure `Atlas/Recursos/<SiteName>/`
 - The same note format and frontmatter
 
+Compatibility note:
+- `WebToObsidian` now normalizes site name from root domain (e.g., `blog.luna-soft.es` → `Luna-soft`) to match `PageToObsidian` and avoid split Personas.
+
 ---
 
 ## Generated note structure

@@ -306,6 +306,19 @@ def extract_pub_date(html: str) -> str:
 def safe_name(s: str, max_len: int = 80) -> str:
     return re.sub(r'[\\/*?:"<>|#\[\]]', "", s).strip()[:max_len].strip()
 
+def normalize_site_name(name: str) -> str:
+    name = re.sub(r"\s+", " ", name).strip(" -|\t\n\r\"")
+    name = re.sub(r"^(?:el|the)\s+blog\s+(?:de|of)\s+", "", name, flags=re.IGNORECASE)
+    if " - " in name:
+        tail = name.split(" - ")[-1].strip()
+        if tail:
+            name = tail
+    if "|" in name:
+        tail = name.split("|")[-1].strip()
+        if tail:
+            name = tail
+    return name[:1].upper() + name[1:] if name else "Sitio"
+
 def url_to_slug(url: str) -> str:
     path = urlparse(url).path.rstrip("/")
     slug = path.split("/")[-1] if "/" in path else path
@@ -315,9 +328,15 @@ def url_to_slug(url: str) -> str:
     return slug
 
 def site_name_from_url(url: str) -> str:
-    netloc = urlparse(url).netloc.replace("www.", "")
-    name = netloc.split(".")[0] if "." in netloc else netloc
-    return name.replace("-", " ").title()
+    netloc = urlparse(url).netloc.lower().replace("www.", "")
+    labels = [p for p in netloc.split(".") if p]
+    if len(labels) >= 3 and labels[-2] in {"co", "com", "org", "net", "gov", "edu"}:
+        base = labels[-3]
+    elif len(labels) >= 2:
+        base = labels[-2]
+    else:
+        base = labels[0] if labels else "sitio"
+    return normalize_site_name(base)
 
 # ── Site type detection ────────────────────────────────────────────────────────
 

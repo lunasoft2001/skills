@@ -21,7 +21,8 @@ from pathlib import Path
 from datetime import date
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse, quote
+from urllib.parse import urlparse, quote, urljoin
+from html import unescape
 from html.parser import HTMLParser
 
 # ── Configuración ─────────────────────────────────────────────────────────────
@@ -70,11 +71,32 @@ def fetch(url: str, timeout: int = 20) -> str:
 
 # ── Extracción de metadatos ────────────────────────────────────────────────────
 
-def extract_site_name(url: str) -> str:
-    """Extrae nombre del sitio del dominio."""
+def extract_meta_content(html: str, patterns: list[str]) -> str | None:
+    """Devuelve el primer content=... para una lista de regex de meta tags."""
+    for pattern in patterns:
+        m = re.search(pattern, html, re.IGNORECASE)
+        if m and m.group(1).strip():
+            return m.group(1).strip()
+    return None
+
+def normalize_site_name(name: str) -> str:
+    name = re.sub(r"\s+", " ", name).strip(" -|\t\n\r")
+    # Normaliza formatos tipo "El Blog de X" / "The Blog of X"
+    name = re.sub(r"^(?:el|the)\s+blog\s+(?:de|of)\s+", "", name, flags=re.IGNORECASE)
+    # Si viene en formato "Artículo - Sitio", quedarnos con la parte de sitio
+    if " - " in name:
+        tail = name.split(" - ")[-1].strip()
+        if tail:
+            name = tail
+    if "|" in name:
+        tail = name.split("|")[-1].strip()
+        if tail:
+            name = tail
+    return name[:1].upper() + name[1:] if name else "Sitio"
+
+def infer_site_name_from_domain(url: str) -> str:
     parsed = urlparse(url)
-    domain = parsed.netloc.replace("www.", "")
-    # Algunos nombres comunes
+    domain = parsed.netloc.lower().replace("www.", "")
     names = {
         "accessaplicaciones.com": "Accessaplicaciones",
         "area404.com": "Area 404",
@@ -82,23 +104,79 @@ def extract_site_name(url: str) -> str:
     }
     if domain in names:
         return names[domain]
-    # Fallback: usar dominio limpio
-    name = domain.split(".")[0].replace("-", " ").title()
-    return name
+
+    labels = [p for p in domain.split(".") if p]
+    if len(labels) >= 3 and labels[-2] in {"co", "com", "org", "net", "gov", "edu"}:
+        base = labels[-3]
+    elif len(labels) >= 2:
+        base = labels[-2]
+    else:
+        base = labels[0] if labels else "sitio"
+    return normalize_site_name(base)
+
+def extract_site_name(url: str, html: str, title: str | None = None) -> str:
+    """Extrae nombre del sitio con prioridad meta tags > título > dominio."""
+    meta_name = extract_meta_content(html, [
+        r'<meta\s+property=["\']og:site_name["\'][^>]*content=["\']([^"\']+)["\']',
+        r'<meta\s+name=["\']application-name["\'][^>]*content=["\']([^"\']+)["\']',
+    ])
+    if meta_name:
+        return normalize_site_name(meta_name)
+
+    if title:
+        m = re.search(r"(?:\bde\b|\bof\b)\s+([A-Za-z0-9\-_.]+)$", title, re.IGNORECASE)
+        if m:
+            return normalize_site_name(m.group(1))
+
+    return infer_site_name_from_domain(url)
+
+def resolve_preferred_source_url(url: str, html: str) -> tuple[str, str, bool]:
+    """Si la URL es portada con múltiples artículos, intenta seguir el primer post."""
+    parsed = urlparse(url)
+    is_home = parsed.path.strip("/") == ""
+    has_many_articles = len(re.findall(r"<article\b", html, re.IGNORECASE)) >= 2
+    if not (is_home and has_many_articles):
+        return url, html, False
+
+    first_article = re.search(r"<article\b[^>]*>(.*?)</article>", html, re.IGNORECASE | re.DOTALL)
+    if not first_article:
+        return url, html, False
+
+    links = re.findall(r'href=["\']([^"\']+)["\']', first_article.group(1), re.IGNORECASE)
+    for link in links:
+        lower = link.lower().strip()
+        if (not lower or lower.startswith("#") or lower.startswith("mailto:") or
+            lower.startswith("javascript:")):
+            continue
+        if any(x in lower for x in ("/category/", "/tag/", "/author/", "/page/", "/feed", "/comments/", "wp-json")):
+            continue
+        candidate = urljoin(url, link)
+        c_parsed = urlparse(candidate)
+        if c_parsed.netloc and c_parsed.netloc != parsed.netloc:
+            continue
+        try:
+            candidate_html = fetch(candidate)
+            return candidate, candidate_html, True
+        except Exception:
+            continue
+
+    return url, html, False
 
 def extract_title(html: str) -> str:
     """Extrae título de <title> o <h1>."""
     m = re.search(r"<title[^>]*>([^<]+)</title>", html, re.IGNORECASE)
     if m:
-        return m.group(1).strip()
+        return unescape(m.group(1)).strip()
     m = re.search(r"<h1[^>]*>([^<]+)</h1>", html, re.IGNORECASE)
     if m:
-        return re.sub(r"<[^>]+>", "", m.group(1)).strip()
+        return unescape(re.sub(r"<[^>]+>", "", m.group(1))).strip()
     return "Sin título"
 
 def extract_content(html: str) -> str:
     """Extrae contenido principal (article, main, post, o body)."""
     patterns = [
+        r'<div[^>]*class=["\'][^"\']*entry-content[^"\']*["\'][^>]*>(.*?)</div>',
+        r'<div[^>]*class=["\'][^"\']*post-content[^"\']*["\'][^>]*>(.*?)</div>',
         r"<article[^>]*>(.*?)</article>",
         r'<div[^>]*class=["\']main["\'][^>]*>(.*?)</div>',
         r"<main[^>]*>(.*?)</main>",
@@ -179,8 +257,52 @@ def html_to_markdown(html: str) -> str:
     # Limpiar espacios en blanco excesivos
     html = re.sub(r"\n\s*\n\s*\n+", "\n\n", html)
     html = html.strip()
+    html = unescape(html)
+
+    # Eliminar bloques de ruido típicos de plantillas WordPress/social
+    noise_patterns = [
+        r"\[\*\*Facebook\].*",
+        r"\[\*\*Twitter\].*",
+        r"\[\*\*Linkedin\].*",
+        r"\[\*\*Whatsapp\].*",
+    ]
+    for pattern in noise_patterns:
+        html = re.sub(pattern, "", html, flags=re.IGNORECASE)
+
+    # Eliminar líneas de contadores aislados tipo *41*
+    html = re.sub(r"^\s*\*\d+\*\s*$", "", html, flags=re.MULTILINE)
+
+    # Recortar al llegar a secciones de comentarios/relacionados
+    cut_markers = [
+        "También te puede interesar",
+        "Deja un comentario",
+        "0 comentarios",
+        "Cancelar respuesta",
+    ]
+    lines = html.splitlines()
+    trimmed = []
+    for line in lines:
+        if any(marker.lower() in line.lower() for marker in cut_markers):
+            break
+        trimmed.append(line)
+    html = "\n".join(trimmed)
     
     return html
+
+def clean_title(title: str, site_name: str) -> str:
+    title = unescape(title)
+    title = re.sub(r"\s+", " ", title).strip()
+
+    # Quita sufijos comunes del sitio para dejar título de artículo
+    suffix_patterns = [
+        rf"\s+[\-–—|]\s+{re.escape(site_name)}$",
+        r"\s+[\-–—|]\s+El Blog de .+$",
+        r"\s+[\-–—|]\s+Blog de .+$",
+    ]
+    for pattern in suffix_patterns:
+        title = re.sub(pattern, "", title, flags=re.IGNORECASE).strip()
+
+    return title or "Sin título"
 
 # ── Persona: Crear o actualizar ────────────────────────────────────────────────
 
@@ -245,10 +367,9 @@ def add_page_to_persona(persona_path: Path, page_title: str, page_url: str,
                        page_id: str, date_published: str, wikilink_page: str):
     """Agrega esta página a un archivo de Persona existente."""
     content = persona_path.read_text(encoding="utf-8")
-    
-    # Evitar duplicados
-    if f"`{page_id}`" in content:
-        return
+
+    # Evitar duplicados en la sección de artículos
+    already_exists = f"`{page_id}`" in content
     
     page_line = f"- [p] **{page_title}** · {date_published or 's.d.'} · {page_url} · `{page_id}`\n"
     
@@ -259,7 +380,8 @@ def add_page_to_persona(persona_path: Path, page_title: str, page_url: str,
     
     for i, line in enumerate(lines):
         new_lines.append(line)
-        if not inserted and "## Artículos" in "\n".join(lines[:i+1]) and line.strip() == "---":
+        if (not already_exists and not inserted and
+            "## Artículos" in "\n".join(lines[:i+1]) and line.strip() == "---"):
             new_lines.pop()
             new_lines.append(page_line)
             new_lines.append(line)
@@ -267,7 +389,15 @@ def add_page_to_persona(persona_path: Path, page_title: str, page_url: str,
     
     # Actualizar wikilink en "Notas generadas"
     final_content = "".join(new_lines)
-    if not inserted:
+    if already_exists:
+        final_content = re.sub(
+            rf"^\s*-\s*\[(?: |x|p)\]\s+\*\*.*?\*\*\s+·\s+.*?\s+·\s+https?://.*?\s+·\s+`{re.escape(page_id)}`\s*$",
+            page_line.strip(),
+            final_content,
+            flags=re.MULTILINE,
+        )
+
+    if not already_exists and not inserted:
         final_content = final_content.replace(
             "\n## Artículos",
             f"\n- [p] **{page_title}** · {date_published or 's.d.'} · {page_url} · `{page_id}`\n\n## Artículos"
@@ -279,15 +409,18 @@ def add_page_to_persona(persona_path: Path, page_title: str, page_url: str,
             f"## Notas generadas\n\n{wikilink_page}"
         )
     
-    # Actualizar total-articulos
-    count = final_content.count("`")
-    if count > 0:
-        final_content = re.sub(
-            r"total-articulos: \d+",
-            f"total-articulos: {count // 2}",
-            final_content,
-            count=1
-        )
+    # Actualizar total-articulos contando solo líneas de artículos
+    article_count = len(
+        re.findall(r"^\s*-\s*\[(?: |x|p)\]\s+\*\*.*?\*\*\s+·\s+.*?\s+·\s+https?://.*?\s+·\s+`[^`]+`\s*$",
+                   final_content,
+                   flags=re.MULTILINE)
+    )
+    final_content = re.sub(
+        r"total-articulos: \d+",
+        f"total-articulos: {article_count}",
+        final_content,
+        count=1
+    )
     
     persona_path.write_text(final_content, encoding="utf-8")
 
@@ -298,27 +431,32 @@ def main():
         print("Uso: python3 page_to_obsidian.py <URL>", file=sys.stderr)
         sys.exit(1)
 
-    url = sys.argv[1]
+    requested_url = sys.argv[1]
     
     # 1. Descargar página
-    print(f">> [1/4] Descargando: {url}", file=sys.stderr)
+    print(f">> [1/4] Descargando: {requested_url}", file=sys.stderr)
     try:
-        html = fetch(url)
+        html = fetch(requested_url)
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
+
+    source_url, source_html, followed_home_article = resolve_preferred_source_url(requested_url, html)
+    if followed_home_article:
+        print(f">> [1.5/4] Portada detectada, usando primer artículo: {source_url}", file=sys.stderr)
     
     # 2. Extraer metadatos
     print(">> [2/4] Extrayendo metadatos...", file=sys.stderr)
-    title = extract_title(html)
-    site_name = extract_site_name(url)
-    date_published = extract_date(html)
-    author = extract_author(html)
-    page_id = page_id_from_url(url)
+    raw_title = extract_title(source_html)
+    site_name = extract_site_name(source_url, source_html, raw_title)
+    title = clean_title(raw_title, site_name)
+    date_published = extract_date(source_html)
+    author = extract_author(source_html)
+    page_id = page_id_from_url(source_url)
     
     # 3. Convertir HTML → Markdown
     print(">> [3/4] Convirtiendo a Markdown...", file=sys.stderr)
-    content_html = extract_content(html)
+    content_html = extract_content(source_html)
     markdown_content = html_to_markdown(content_html)
     
     # 4. Gestionar Persona
@@ -335,27 +473,60 @@ def main():
     persona_path = get_persona_path(site_name)
     if not persona_exists(site_name):
         persona_path = create_persona_index(
-            site_name, title, url, page_id,
+            site_name, title, source_url, page_id,
             date_published or "s.d.", wikilink_page
         )
         created_now = True
     else:
         add_page_to_persona(
-            persona_path, title, url, page_id,
+            persona_path, title, source_url, page_id,
             date_published or "s.d.", wikilink_page
         )
         created_now = False
+
+    # 5. Guardar nota técnica en Atlas/Recursos/<Sitio>/
+    note_text = f"""---
+tags: [atlas, recurso, web]
+url: {source_url}
+sitio: \"{site_name}\"
+persona: \"[[Atlas/Personas/{safe_filename(site_name)}]]\"
+author: \"{author or 's.d.'}\"
+date-published: \"{date_published or 's.d.'}\"
+date-saved: {date.today().isoformat()}
+---
+
+# {title}
+
+> 👤 Por: [[Atlas/Personas/{safe_filename(site_name)}]]
+> 📅 Publicado: {date_published or 's.d.'}
+> 🔗 [Leer original]({source_url})
+
+---
+
+## Contenido
+
+{markdown_content}
+
+---
+
+## Fuentes
+- [Artículo original]({source_url}) — {site_name}
+"""
+    target_note.write_text(note_text, encoding="utf-8")
     
     # Emitir JSON
     output = {
         "title": title,
         "site_name": site_name,
-        "url": url,
+        "url": source_url,
+        "requested_url": requested_url,
+        "resolved_from_home": followed_home_article,
         "page_id": page_id,
         "date_published": date_published,
         "author": author,
         "content": markdown_content,
         "target_note": str(target_note),
+        "saved": True,
         "fecha_guardado": date.today().isoformat(),
         "persona": {
             "name": site_name,
@@ -366,7 +537,7 @@ def main():
     }
     
     print("\n--- PAGE_TO_OBSIDIAN_JSON_START ---", file=sys.stderr)
-    print(json.dumps(output, ensure_ascii=False, indent=2))
+    print(json.dumps(output, ensure_ascii=False, indent=2), file=sys.stderr)
     print("--- PAGE_TO_OBSIDIAN_JSON_END ---", file=sys.stderr)
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ author: lunasoft2001
 
 # PageToObsidian
 
-Complete capture of a single web page to a technical note in Obsidian. Auto-detects site type, converts HTML to quality Markdown, and manages the Personas index identically to `VideoToObsidian`.
+Complete capture of a single web page to a technical note in Obsidian. Auto-detects page/site context, converts HTML to quality Markdown, and manages the Personas index identically to `WebToObsidian`.
 
 **Dependencies:** HTML/web utilities toolkit (stdlib)
 
@@ -51,10 +51,12 @@ python3 ~/.copilot/skills/PageToObsidian/scripts/page_to_obsidian.py "https://ex
 
 The script does:
 1. Downloads the HTML page
-2. Detects site type (WordPress, static, blog, etc.)
+2. If URL is a blog home page, resolves automatically to the first post
 3. Extracts: title, content, publish date, author (if available)
-4. Converts HTML → clean Markdown
-5. Outputs JSON with all data
+4. Normalizes site name from metadata/root domain for Persona compatibility
+5. Converts HTML → clean Markdown
+6. Saves note in `Atlas/Recursos/<SiteName>/`
+7. Outputs JSON with all data
 
 ### Step 2 — Output JSON
 
@@ -65,11 +67,14 @@ JSON contains these key fields:
 | `title` | Page title |
 | `site_name` | Site name (e.g., "Accessaplicaciones") |
 | `url` | Full URL |
+| `requested_url` | Original URL provided by user |
+| `resolved_from_home` | `true` if script auto-followed home page to first article |
 | `content` | Content converted to Markdown |
 | `date_published` | Publication date (if available) |
 | `author` | Author name (if available) |
 | `page_id` | Unique page ID (slug or hash) |
 | `target_note` | Path to save note in `Atlas/Recursos/<SiteName>/` |
+| `saved` | `true` when note is written successfully |
 | `persona` | Site information object (see below) |
 
 **Persona object:**
@@ -161,17 +166,18 @@ date-saved: <today>
 
 Creates folder `Atlas/Recursos/<SiteName>/` if it doesn't exist.
 Saves note with clean article title as filename.
-If file already exists, **asks user** whether to overwrite.
+If file already exists, it updates the note in place.
 
-### Step 5 — Open in Obsidian
+### Step 5 — Continue with WebToObsidian (optional)
 
-Automatically opens generated note in Obsidian.
+If the content is good and you want the whole site, run WebToObsidian scan next. Existing page(s) already captured by PageToObsidian will remain marked as `[p]` in the shared Persona index.
 
 ---
 
 ## Conventions
 
 - **Site name**: extracted from domain or metadata (e.g., "Accessaplicaciones")
+- **Domain handling**: subdomains are normalized to root site identity when possible (e.g., `blog.luna-soft.es` → `Luna-soft`)
 - **Note location**: `VAULT/Atlas/Recursos/<SiteName>/<Title>.md`
 - **Persona location**: `VAULT/Atlas/Personas/<SiteName>.md`
 - **Page ID**: clean slug or hash if no slug exists
