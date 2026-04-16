@@ -1,247 +1,10 @@
 ---
 name: VideoToObsidian
-description: "Complete pipeline to capture a YouTube video into a structured Obsidian technical note: fetches metadata, downloads the transcript (via TranscribeYoutube), analyzes content, and generates a full technical note with embedded video, summary, steps or key points, and a wikilink to the transcript. Use when the user asks to capture a video, create a technical note from YouTube, VideoToObsidian, technical doc from video, or process a video to Obsidian."
+description: "Proceso completo de captura de vídeo YouTube a nota técnica Obsidian: obtiene metadatos, descarga la transcripción (via TranscribeYoutube), analiza el contenido y genera una nota técnica completa con vídeo embebido, resumen, pasos o puntos clave, y wikilink a la transcripción. Usa cuando el usuario pida: capturar vídeo, crear nota técnica de YouTube, VideoToObsidian, documento técnico de vídeo, procesar vídeo a Obsidian."
 license: MIT
 author: lunasoft2001
   https://github.com/lunasoft2001
 ---
-
-# VideoToObsidian
-
-Complete pipeline to capture any YouTube video into a technical note ready for an Obsidian Second Brain. Combines automatic metadata and transcript download with intelligent content analysis to produce the right document for the video type.
-
-**Depends on:** skill `TranscribeYoutube` (must be installed in the sibling directory)
-
----
-
-## When to use this skill
-
-- The user provides a YouTube URL and wants a complete technical note
-- The user says "capture this to Obsidian", "create a note from this video", "VideoToObsidian"
-- The user wants to document a tutorial, concept, or demo from YouTube in their vault
-- The user shares a link and says "I want to study this properly"
-
----
-
-## Requirements
-
-- **Python 3.9+** — stdlib only, no external dependencies
-- Skill **TranscribeYoutube** installed at `~/.copilot/skills/TranscribeYoutube/`
-- The video must have subtitles available (auto-generated or manual)
-- `OBSIDIAN_VAULT` environment variable (optional — defaults to `~/Documents/Obsidian/MyVault`)
-
----
-
-## Command to run
-
-```bash
-python3 ~/.copilot/skills/VideoToObsidian/scripts/video_to_obsidian.py <URL>
-```
-
-Capture the JSON output:
-
-```bash
-JSON=$(python3 ~/.copilot/skills/VideoToObsidian/scripts/video_to_obsidian.py <URL>)
-```
-
----
-
-## Full workflow step by step
-
-### Step 1 — Run the script
-
-```bash
-python3 ~/.copilot/skills/VideoToObsidian/scripts/video_to_obsidian.py <YouTube_URL>
-```
-
-The script does:
-1. Calls InnerTube API → fetches `title`, `channel`, `description`, `duration`
-2. Delegates to TranscribeYoutube → creates `Atlas/Recursos/Transcripciones/VIDEO_ID - Title.md`
-3. Reads the generated transcript file
-4. Emits a JSON payload with all data via stdout
-
-### Step 2 — Read the JSON
-
-Key fields in the JSON output:
-
-| Field | Description |
-|---|---|
-| `title` | Video title |
-| `channel` | Channel name |
-| `description` | Video description (first 800 chars) |
-| `duration` | Formatted duration (mm:ss or h:mm:ss) |
-| `url` | Full YouTube URL |
-| `embed_url` | URL for iframe embed |
-| `fecha_guardado` | Today's date |
-| `wikilink_transcript` | Ready-to-paste wikilink |
-| `transcript_content` | Full transcript text |
-| `target_note` | Full path where the main note should be saved |
-
-### Step 3 — Detect content type
-
-Analyze `transcript_content` + `title` + `description` to classify the video:
-
-| Type | Signals in the transcript |
-|---|---|
-| **TUTORIAL** | "how to", "step", sequential instructions, actionable checklist |
-| **CONCEPT/THEORY** | "what is", "means", explanatory language, no concrete steps |
-| **DEMO/SHOWCASE** | shows a product/tool, "let me show you", "look at this", not easily replicable |
-| **TALK/INTERVIEW** | conversation, Q&A, multiple voices, loose ideas |
-| **REVIEW/COMPARISON** | evaluation, pros/cons, "I like", "I don't like", ratings |
-
-### Step 4 — Generate the note with the right template
-
-The frontmatter and video block are always the same:
-
-```markdown
----
-tags: [atlas, resource, <topic-tag>]
-url: <url>
-channel: "<channel>"
-duration: "<duration>"
-date-saved: <fecha_guardado>
----
-
-# <title>
-
-> 🎥 **<channel>** — [watch on YouTube](<url>)
-> <iframe width="100%" height="400" src="<embed_url>" allowfullscreen></iframe>
->
-> 📄 Full transcript: <wikilink_transcript>
-> 🔗 Original video: [youtube.com/watch?v=<video_id>](<url>)
->
-> **Summary:** <3-5 sentence summary generated from the transcript>
-
----
-```
-
-Then add sections based on content type:
-
-#### TUTORIAL template
-
-```markdown
-## When to use this
-- <use case 1 extracted from transcript>
-- <use case 2>
-
----
-
-## Steps
-
-- [ ] 1. **<action>** — <detail>
-- [ ] 2. **<action>** — <detail>
-- [ ] ...
-
----
-
-## Tips
-- <tip 1 from transcript>
-- <tip 2>
-
----
-
-## Sources
-- Video: [<title>](<url>) — <channel>
-
-## Connections
-- [[...]] — <reason for the link>
-```
-
-#### CONCEPT/THEORY template
-
-```markdown
-## What it is
-<2-3 paragraph explanation>
-
-## Why it matters
-- <reason 1>
-- <reason 2>
-
-## Key points
-- **<concept>**: <brief definition>
-- **<concept>**: <brief definition>
-
----
-
-## Sources
-- Video: [<title>](<url>) — <channel>
-
-## Connections
-- [[...]] — <reason for the link>
-```
-
-#### DEMO/SHOWCASE template
-
-```markdown
-## What the video shows
-<description of what is demonstrated>
-
-## Highlights
-- <point 1>
-- <point 2>
-
-## Practical application
-- <how this could be used in my context>
-
----
-
-## Sources
-- Video: [<title>](<url>) — <channel>
-
-## Connections
-- [[...]] — <reason for the link>
-```
-
-#### TALK/INTERVIEW template
-
-```markdown
-## About
-<context about the speaker or topic>
-
-## Main ideas
-- <idea 1>
-- <idea 2>
-
-## Notable quotes
-> "<literal quote from transcript>"
-
----
-
-## Sources
-- Video: [<title>](<url>) — <channel>
-
-## Connections
-- [[...]] — <reason for the link>
-```
-
-### Step 5 — Save the note
-
-Save the generated note at the `target_note` path from the JSON.  
-If a file with that name already exists, **ask the user** whether to overwrite.
-
-### Step 6 — Open in Obsidian
-
-```bash
-open "obsidian://open?vault=<vault_name>&file=Atlas/Recursos/<safe_title>"
-```
-
----
-
-## Conventions
-
-- **File name**: cleaned video title, max 60 characters, no special characters
-- **Location**: `VAULT/Atlas/Resources/<Title>.md`
-- **Transcript**: `VAULT/Atlas/Resources/Transcriptions/<VIDEO_ID> - <Title>.md` (generated by TranscribeYoutube)
-- **Topic tags**: infer from title + description (e.g. `affinity-photo`, `python`, `ai`)
-
----
-
-## Notes
-
-- The script may take 5–15 seconds (InnerTube API + transcript download)
-- If the video has no subtitles, the note is created without a transcript or transcript wikilink
-- `transcript_found: false` in the JSON indicates no transcript available — generate the note summary from `description` only
-
 
 # VideoToObsidian
 
@@ -313,6 +76,52 @@ El JSON contiene estos campos clave:
 | `wikilink_transcript` | Wikilink listo para insertar |
 | `transcript_content` | Transcripción completa |
 | `target_note` | Ruta donde guardar la nota principal |
+| `persona` | Objeto con info del canal (ver abajo) |
+
+**Objeto `persona`:**
+
+| Campo | Descripción |
+|---|---|
+| `name` | Nombre del canal (ej: "Area 404") |
+| `path` | Ruta completa al archivo `Atlas/Personas/NombreCanal.md` |
+| `wikilink` | Wikilink listo: `[[Atlas/Personas/NombreCanal]]` |
+| `created_now` | `true` si se acaba de crear, `false` si ya existía |
+
+### Paso 2.5 — Gestión automática de Personas
+
+El script **verifica automáticamente** si existe `Atlas/Personas/<ChannelName>.md`:
+
+- **Si NO existe:** Crea un nuevo archivo de Persona con este vídeo marcado como `[p]` (procesado)
+- **Si SÍ existe:** Agrega el vídeo al checklist existente y actualiza la sección "Notas generadas"
+
+Esta integración permite que `VideoToObsidian` sea **totalmente compatible con `ChannelToObsidian`**:
+- Descargas vídeos individuales → se registran en su Persona
+- Luego descargas todo el canal → el índice ya tiene los vídeos previos como `[p]`
+
+**Plantilla generada** (igual a `ChannelToObsidian`):
+
+```markdown
+---
+tags: [atlas, persona, canal-youtube]
+canal: "Nombre del Canal"
+url: https://www.youtube.com/@canalhandle
+updated: 2026-04-16
+total-videos: 3
+---
+
+# Nombre del Canal — Índice de vídeos
+
+## Vídeos
+
+- [p] **Título del vídeo** · 12:34 · hoy · `VIDEO_ID`
+- [ ] **Otro vídeo** · 45:12 · ayer · `OTRO_ID`
+
+---
+
+## Notas generadas
+
+- [[Atlas/Recursos/Título del vídeo procesado]]
+```
 
 ### Paso 3 — Detectar el tipo de contenido
 
@@ -335,13 +144,15 @@ Usa la plantilla del tipo detectado. **El frontmatter y el bloque de vídeo son 
 tags: [atlas, recurso, <tag-tema>]
 url: <url>
 canal: "<channel>"
+persona: "<persona_wikilink>"
 duracion: "<duration>"
 fecha-guardado: <fecha_guardado>
 ---
 
 # <title>
 
-> 🎥 **<channel>** — [ver en YouTube](<url>)
+> 👤 Por: <persona_wikilink>
+> 🎥 [ver en YouTube](<url>)
 > <iframe width="100%" height="400" src="<embed_url>" allowfullscreen></iframe>
 >
 > 📄 Transcripción completa: <wikilink_transcript>
@@ -488,3 +299,7 @@ open "obsidian://open?vault=Luna&file=Atlas/Recursos/<safe_title>"
 - Si el vídeo no tiene subtítulos disponibles, se crea la nota sin transcripción y sin wikilink de transcripción
 - El campo `transcript_found: false` en el JSON indica que no hay transcripción
 - En ese caso, genera la nota con el resumen basado en `description` solamente
+- **Nuevo:** El script maneja automáticamente `Atlas/Personas/<ChannelName>.md`:
+  - Si no existe, lo crea con este vídeo marcado como `[p]`
+  - Si ya existe, lo actualiza agregando el vídeo al checklist
+  - Totalmente compatible con `ChannelToObsidian` — puede ejecutarse antes, después o intercalado
