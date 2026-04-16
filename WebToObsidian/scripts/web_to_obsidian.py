@@ -599,8 +599,39 @@ def load_existing_index(path: Path) -> dict[str, str]:
             states[m.group(2)] = m.group(1).strip()
     return states
 
+def load_existing_wikilinks(path: Path) -> list[str]:
+    """Load existing note wikilinks from the index file, if any."""
+    if not path.exists():
+        return []
+    links = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if re.match(r"^-\s*\[\[Atlas/Recursos/.+\]\]", line.strip()):
+            links.append(line.strip())
+    return links
+
+def discover_note_wikilinks(site_name: str) -> list[str]:
+    """Build wikilinks from already generated notes in Atlas/Recursos/<SiteName>."""
+    site_dir = RECURSOS_DIR / safe_name(site_name)
+    if not site_dir.exists():
+        return []
+    links = []
+    for note in sorted(site_dir.glob("*.md"), key=lambda p: p.name.lower()):
+        links.append(f"- [[Atlas/Recursos/{safe_name(site_name)}/{note.stem}]]")
+    return links
+
+def merge_unique(lines: list[str]) -> list[str]:
+    seen = set()
+    out = []
+    for line in lines:
+        key = line.strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(key)
+    return out
+
 def write_index(path: Path, site_name: str, site_url: str, site_type: str,
-                items: list[dict], existing_states: dict):
+                items: list[dict], existing_states: dict, existing_wikilinks: list[str] | None = None):
     today = date.today().isoformat()
     lines = [
         "---",
@@ -638,9 +669,16 @@ def write_index(path: Path, site_name: str, site_url: str, site_type: str,
         "",
         "## Notas generadas",
         "",
-        "> Los artículos procesados aparecerán aquí como wikilinks.",
-        "",
     ]
+
+    wikilinks = merge_unique(existing_wikilinks or [])
+    if wikilinks:
+        lines += wikilinks + [""]
+    else:
+        lines += [
+            "> Los artículos procesados aparecerán aquí como wikilinks.",
+            "",
+        ]
     path.write_text("\n".join(lines), encoding="utf-8")
 
 def update_index_processed(path: Path, slug: str):
@@ -764,7 +802,10 @@ def phase_scan(url: str):
 
     index_path = site_index_path(site_name)
     existing   = load_existing_index(index_path)
-    write_index(index_path, site_name, base_url, site_type, items, existing)
+    existing_wikilinks = merge_unique(
+        load_existing_wikilinks(index_path) + discover_note_wikilinks(site_name)
+    )
+    write_index(index_path, site_name, base_url, site_type, items, existing, existing_wikilinks)
 
     print(f">> Índice guardado: {index_path}", file=sys.stderr)
     print(f">> Marca con [x] los artículos que quieras procesar,", file=sys.stderr)
